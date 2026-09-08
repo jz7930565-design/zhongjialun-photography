@@ -25,16 +25,22 @@ const directions = [
   { index: 9, title: "听风", english: "A MOMENT IN NATURE", category: "竹林 · 自然光影", description: "不急着看镜头，让风和光先找到你。", style: "竹林自然光影" },
   { index: 10, title: "尽兴", english: "COLOUR YOUR STORY", category: "浓烈色彩 · 汉服人像", description: "让颜色大胆一点，让这一刻更有自己的表达。", style: "浓烈色彩汉服" },
 ];
+const preparations = [
+  { title: "先了解你，而不是先套风格。", text: "聊聊你喜欢的照片、想留下的感觉，以及不喜欢的角度和动作，再确定准备的方向。" },
+  { title: "研究地点，也想好怎么构图。", text: "提前看场景和可用角度，考虑人物放在哪里、画面怎么取舍，让地点为你服务。" },
+  { title: "准备姿势，更准备怎么引导。", text: "整理适合的动作参考，想好怎样拆成转身、视线、手的位置等小步骤，不用你自己猜怎么摆。" },
+  { title: "到了现场，按你的状态调整。", text: "参考只是起点。根据现场光线和你的感受调整动作与角度，不舒服、不喜欢，都可以直接说。" },
+];
 const process = [
-  { title: "聊一聊你想拍的自己", phase: "初次沟通", text: "可以发来喜欢的照片，也可以只说想要自然、安静或有故事感。一起梳理人物、风格与拍摄用途。", you: "拍摄人数、意向日期、预算范围，或几张喜欢的参考图。", confirm: "拍摄类型、城市与可选场景。" },
+  { title: "聊一聊你想拍的自己", phase: "初次沟通", text: "先聊你喜欢什么、不喜欢什么，以及为什么想拍这组照片。参考图可以帮助沟通，不需要提前确定一套风格，也不用把自己套进别人的样子。", you: "拍摄人数、意向日期和预算；喜欢的参考图、想避开的风格或拍摄顾虑，也可以一起说。", confirm: "拍摄类型、城市与可选场景。" },
   { title: "把拍摄内容说清楚", phase: "方案与预约", text: "先明确一场拍摄包含什么，再安排档期。拍摄、妆造、服装和场地需要分别确认，避免到了现场才发现理解不同。", you: "选择拍摄方向，说明服装、妆造与出行需求。", confirm: "总费用、时长、服装套数、精修张数，以及预约和改期规则。" },
-  { title: "准备好，再轻松出发", phase: "拍摄前", text: "根据场景协调服饰与配件，确认集合地点和时间。外景还需要考虑天气、光线与步行距离。", you: "核对服装和随身物品；提前说明体力、行动或其他特别需求。", confirm: "妆造安排、集合信息、场地费用和天气备选安排。" },
-  { title: "从简单的动作开始", phase: "拍摄当天", text: "不用一开始就进入状态。可以从走动、转身、看向窗外等简单动作开始，再逐步调整表情、手势与站姿。", you: "按约定到场，有不舒服或不喜欢的角度及时说出来。", confirm: "当天拍摄顺序、人物状态与画面方向。" },
+  { title: "把想法变成拍摄准备", phase: "拍摄前", text: "根据沟通的方向，我会研究地点、构图和姿势，整理动作参考，提前想好如何引导你完成。再一起确认服装搭配、集合信息与外景备选安排。", you: "反馈参考图中喜欢和不喜欢的部分；核对服装与随身物品，不用背姿势。", confirm: "画面方向、地点与时间、妆造服装安排，以及天气备选方案。" },
+  { title: "从简单的动作开始", phase: "拍摄当天", text: "不用一开始就进入状态。我会从走动、转身、调整视线等简单动作开始引导，再根据你的感受和现场条件调整。参考姿势不必一模一样，舒服、适合你更重要。", you: "按约定到场，有不舒服或不喜欢的角度及时说出来。", confirm: "当天拍摄顺序、人物状态与画面方向。" },
   { title: "选出你真正喜欢的照片", phase: "选片与精修", text: "选片时兼顾表情、姿态与整组照片的变化。精修前说明肤色、皮肤质感和身形调整偏好，让处理方向更明确。", you: "反馈喜欢的照片与修图偏好，集中整理修改意见。", confirm: "选片方式、精修范围、加修费用与可修改次数。" },
   { title: "收好这一次的记忆", phase: "成片交付", text: "交付前核对文件、数量与版本。需要打印或用于社交平台，可以在沟通时说明，提前确认对应的尺寸与格式。", you: "收到后检查文件是否完整，并及时下载和备份。", confirm: "交付日期、文件规格、底片范围和文件保留时间。" },
 ];
 const questions = [
-  ["没有拍摄经验，会不会很僵硬？", "可以从站立、走动和转身等简单动作开始，不必提前背一整套姿势。沟通时告诉我你喜欢和不喜欢的表情、角度，拍摄中也可以直接反馈感受。"],
+  ["没有拍摄经验，会不会很僵硬？", "不用提前学会摆姿势。我会准备动作参考，想好怎样拆成视线、转身和手的位置等小步骤，再在现场引导。你不需要照着参考硬摆；感到僵硬或不舒服，可以随时告诉我，一起调整。"],
   ["妆造、服装和场地都包含吗？", "需要按具体方案分别确认。预约前请确认妆造由谁安排、服装是否自备或租赁、门票和场地费用由谁承担，不把这些项目默认计入拍摄报价。"],
   ["能拿到多少照片，多久交付？", "精修张数、底片是否交付、选片时间和最终交付日期，需要在预约时确认。加修、加急或打印需求也请提前提出，确认能否安排及相应费用。"],
   ["下雨、迟到或临时有事怎么办？", "外景拍摄应提前沟通天气备选方案。遇到情况请尽早联系，是否改期、档期如何调整，以及已产生费用的处理方式，以预约时确认的安排为准。"],
@@ -48,7 +54,7 @@ export default function Home() {
   const [copyStatus, setCopyStatus] = useState("");
   const dialogRef = useRef<HTMLDialogElement>(null);
   const returnFocus = useRef<HTMLElement | null>(null);
-  const inquiryMessage = `你好，我在你的网站看了作品，想咨询${chosenStyle ? "「" + chosenStyle + "」风格的" : "一组"}拍摄。\n意向日期：\n拍摄城市 / 人数：\n预算范围：\n妆造服装需求：\n想了解适合我的方案和报价。`;
+  const inquiryMessage = `你好，我在你的网站看了作品，想咨询${chosenStyle && chosenStyle !== "还没想好，想聊聊" ? "「" + chosenStyle + "」风格的" : "一组"}拍摄。\n意向日期：\n拍摄城市 / 人数：\n预算范围：\n妆造服装需求：\n喜欢或想避开的风格（选填）：\n拍摄顾虑（选填）：\n想一起找适合我的拍摄方向，了解方案和报价。`;
   const openPhoto = (index: number) => {
     returnFocus.current = document.activeElement as HTMLElement;
     setActiveIndex(index);
@@ -87,7 +93,7 @@ export default function Home() {
       <section className="cover" id="top">
         <img className="cover-photo" src={photographs[0].src} alt={photographs[0].alt} fetchPriority="high" />
         <div className="cover-top"><span>人物 · 汉服 · 纪念写真</span><button type="button" onClick={() => openPhoto(0)}>查看原幅 ↗</button></div>
-        <div className="cover-bottom"><div><p className="cover-kicker">A PORTRAIT. A STORY.</p><h1>让此刻，<br /><span>成为故事。</span></h1><p className="cover-description">不必成为别人。来拍一组，属于你的照片。</p></div><a className="cover-inquiry" href="#contact"><span>聊聊我的拍摄</span><span aria-hidden="true">↗</span></a></div>
+        <div className="cover-bottom"><div><p className="cover-kicker">A PORTRAIT. A STORY.</p><h1>让此刻，<br /><span>成为故事。</span></h1><p className="cover-description">不用提前学会摆姿势，从简单的动作开始。</p></div><a className="cover-inquiry" href="#contact"><span>聊聊我的拍摄</span><span aria-hidden="true">↗</span></a></div>
         <div className="cover-foot"><span>钟家伦 / PHOTOGRAPHY</span><a href="#works">向下，寻找你的风格 ↓</a></div>
       </section>
 
@@ -111,9 +117,9 @@ export default function Home() {
 
       <section className="experience" id="experience">
         <div className="experience-photo"><img src={photographs[8].src} alt={photographs[8].alt} loading="lazy" /><span>小憩 / 人物摄影作品</span></div>
-        <div className="experience-copy"><p className="section-label">02 / THE EXPERIENCE</p><h2>第一次拍照，<br />也不必急着<br /><em>“表现很好”。</em></h2><p className="experience-lead">我是钟家伦。比起一套标准的姿势，<br />我更想找到你在镜头前舒服的状态。</p>
-          <div className="care-list"><div><span>01</span><div><h3>没想好风格？先聊喜欢什么。</h3><p>几张参考图、喜欢的颜色，或者一次想纪念的经历，都能成为拍摄的起点。</p></div></div><div><span>02</span><div><h3>不会摆姿势？从简单动作开始。</h3><p>走动、转身、看向远处。不用背动作，拍摄时可以随时交流感受和角度。</p></div></div><div><span>03</span><div><h3>担心修得不像自己？提前聊偏好。</h3><p>喜欢自然纹理，还是更细致的处理？先把肤色、质感和调整范围说清楚。</p></div></div></div>
-          <a className="underlined-link" href="#contact">说说我的想法 <span aria-hidden="true">↗</span></a>
+        <div className="experience-copy"><p className="section-label">02 / BEFORE THE CAMERA</p><h2>在你来到<br />镜头前，<br /><em>准备先开始。</em></h2><p className="experience-lead">我是钟家伦。先了解你的喜好，再研究地点、构图和动作，想好怎么引导你。你不需要独自琢磨“到了现场该怎么拍”。</p>
+          <div className="care-list">{preparations.map((item, index) => <div key={item.title}><span>0{index + 1}</span><div><h3>{item.title}</h3><p>{item.text}</p></div></div>)}</div>
+          <a className="underlined-link" href="#contact">一起找适合我的拍摄方向 <span aria-hidden="true">↗</span></a>
         </div>
       </section>
 
@@ -129,8 +135,8 @@ export default function Home() {
       </section>
 
       <section className="contact section" id="contact">
-        <div className="contact-heading"><p className="section-label">YOUR STORY STARTS HERE</p><h2>下一位主角，<br /><em>是你。</em><span className="contact-arrow" aria-hidden="true">↗</span></h2><p>不需要先想好一切。<br />告诉我喜欢的感觉，问问方案和报价。</p><div className="contact-methods"><a href="tel:15220017059"><span>直接打个电话</span><strong>152 2001 7059 ↗</strong></a><a href={`mailto:3315466882@qq.com?subject=${encodeURIComponent("摄影咨询" + (chosenStyle ? " · " + chosenStyle : ""))}&body=${encodeURIComponent(inquiryMessage)}`}><span>带着想法发邮件</span><strong>3315466882@qq.com ↗</strong></a></div><p className="contact-note">具体费用、档期和交付安排，在预约前确认。</p></div>
-        <aside className="inquiry"><span className="inquiry-label">LET’S MAKE IT YOURS / 拍摄咨询</span><h3>你喜欢哪一种感觉？</h3><div className="style-options" aria-label="选择咨询的拍摄风格">{[...directions.map((d) => d.style), "还没想好，想聊聊"].map((style) => <button key={style} type="button" aria-pressed={chosenStyle === style} onClick={() => chooseStyle(style)}>{style}<span aria-hidden="true">{chosenStyle === style ? " ✓" : " ＋"}</span></button>)}</div><label htmlFor="inquiry-message">帮你准备好第一句话</label><textarea id="inquiry-message" value={inquiryMessage} readOnly rows={6} aria-describedby="inquiry-help" /><button className="button inquiry-copy" type="button" onClick={copyInquiry}>复制这段话，开始咨询 <span aria-hidden="true">↗</span></button><p id="inquiry-help" className="copy-status" role="status">{copyStatus || "复制后可在聊天中补充信息；此处不会提交预约。"}</p></aside>
+        <div className="contact-heading"><p className="section-label">YOUR STORY STARTS HERE</p><h2>下一位主角，<br /><em>是你。</em><span className="contact-arrow" aria-hidden="true">↗</span></h2><p>还没想好怎么拍也没关系。<br />说说你喜欢什么、担心什么，再一起找方向。</p><div className="contact-methods"><a href="tel:15220017059"><span>直接打个电话</span><strong>152 2001 7059 ↗</strong></a><a href={`mailto:3315466882@qq.com?subject=${encodeURIComponent("摄影咨询" + (chosenStyle ? " · " + chosenStyle : ""))}&body=${encodeURIComponent(inquiryMessage)}`}><span>带着想法发邮件</span><strong>3315466882@qq.com ↗</strong></a></div><p className="contact-note">具体费用、档期和交付安排，在预约前确认。</p></div>
+        <aside className="inquiry"><span className="inquiry-label">LET’S MAKE IT YOURS / 拍摄咨询</span><h3>你喜欢哪一种感觉？</h3><div className="style-options" aria-label="选择咨询的拍摄风格">{[...directions.map((d) => d.style), "还没想好，想聊聊"].map((style) => <button key={style} type="button" aria-pressed={chosenStyle === style} onClick={() => chooseStyle(style)}>{style}<span aria-hidden="true">{chosenStyle === style ? " ✓" : " ＋"}</span></button>)}</div><label htmlFor="inquiry-message">帮你准备好第一句话</label><textarea id="inquiry-message" value={inquiryMessage} readOnly rows={8} aria-describedby="inquiry-help" /><button className="button inquiry-copy" type="button" onClick={copyInquiry}>复制这段话，开始咨询 <span aria-hidden="true">↗</span></button><p id="inquiry-help" className="copy-status" role="status">{copyStatus || "复制后可在聊天中补充信息；此处不会提交预约。"}</p></aside>
       </section>
 
       <footer><div className="footer-top"><a className="brand" href="#top"><strong>钟家伦<span className="brand-dot">.</span></strong><span>人物摄影</span></a><span>© 2026 钟家伦摄影</span><a href="#top">回到顶部 ↑</a></div><p className="footer-wordmark" aria-hidden="true">JIALUN<span>↗</span></p></footer>
