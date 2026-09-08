@@ -17,14 +17,32 @@ const photographs = [
   { src: "./work/portrait-12.webp", alt: "书案前阅读的蓝衣少年" },
   { src: "./work/portrait-13.webp", alt: "宫殿前的侠客人物肖像" },
   { src: "./work/portrait-14.webp", alt: "古建筑前撑伞的粉衣少女" },
+  { src: "./work/collection-15.webp", alt: "夕阳中相对而立的双人汉服剪影" },
+  { src: "./work/collection-16.webp", alt: "蓝天下抬手遮光的白衣人像" },
+  { src: "./work/collection-17.webp", alt: "草丛中仰望飞机的白衣背影" },
+  { src: "./work/collection-18.webp", alt: "蓝天堤岸上回头的白衣人像" },
+  { src: "./work/collection-19.webp", alt: "草丛与蓝天之间的白衣侧脸" },
+  { src: "./work/collection-20.webp", alt: "墙边抬袖的红衣汉服侧脸" },
+  { src: "./work/collection-21.webp", alt: "粉紫晚霞下坐在江边的两个人" },
+  { src: "./work/collection-22.webp", alt: "水边看手机的人物街拍" },
+  { src: "./work/collection-23.webp", alt: "金色落日下坐在江边的人物剪影" },
+  { src: "./work/collection-24.webp", alt: "花树下坐着的两个人与吉他" },
+  { src: "./work/collection-25.webp", alt: "堤岸上骑车与步行的人物瞬间" },
 ];
 
-const selected = [13, 9, 10];
 const directions = [
-  { index: 13, title: "入画", english: "INTO THE SCENE", category: "古建 · 东方意境", description: "一把伞，一段长廊。把你放进有故事的风景。", style: "古建东方意境" },
-  { index: 9, title: "听风", english: "A MOMENT IN NATURE", category: "竹林 · 自然光影", description: "不急着看镜头，让风和光先找到你。", style: "竹林自然光影" },
-  { index: 10, title: "尽兴", english: "COLOUR YOUR STORY", category: "浓烈色彩 · 汉服人像", description: "让颜色大胆一点，让这一刻更有自己的表达。", style: "浓烈色彩汉服" },
+  { index: 19, title: "入画", english: "INTO THE SCENE", category: "汉服写真 · 东方意境", description: "从衣袖到视线，把喜欢的东方意境，变成适合你的画面。", style: "汉服写真", bookable: true },
+  { index: 18, title: "自在", english: "A MOMENT OF YOUR OWN", category: "自然写真 · 日常穿搭", description: "不一定要盛装。蓝天、草木和简单的衣服，也可以留下你的样子。", style: "自然写真", bookable: true },
+  { index: 20, title: "日常", english: "LIFE AS IT HAPPENS", category: "街头观察 · 非预约客片", description: "江边的晚霞、树下的停留、擦肩的瞬间。记录生活里没有排练的画面。", style: "", bookable: false },
 ];
+const selected = directions.map((direction) => direction.index);
+const streetIndexes = [20, 23, 22, 24, 21];
+const collections = [
+  { id: "hanfu", title: "汉服写真", note: "古建、竹林与人物光影", indexes: [19, 14, 13, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
+  { id: "natural", title: "自然写真", note: "蓝天、草木与日常穿搭", indexes: [18, 17, 15, 16] },
+  { id: "street", title: "街头观察", note: "个人观察记录，非预约客片", indexes: streetIndexes },
+];
+const inquiryStyles = ["汉服写真", "古建东方意境", "竹林自然光影", "浓烈色彩汉服", "自然写真", "还没想好，想聊聊"];
 const preparations = [
   { title: "先了解你，而不是先套风格。", text: "聊聊你喜欢的照片、想留下的感觉，以及不喜欢的角度和动作，再确定准备的方向。" },
   { title: "研究地点，也想好怎么构图。", text: "提前看场景和可用角度，考虑人物放在哪里、画面怎么取舍，让地点为你服务。" },
@@ -92,7 +110,7 @@ export default function Home() {
 
       <section className="cover" id="top">
         <img className="cover-photo" src={photographs[0].src} alt={photographs[0].alt} fetchPriority="high" />
-        <div className="cover-top"><span>人物 · 汉服 · 纪念写真</span><button type="button" onClick={() => openPhoto(0)}>查看原幅 ↗</button></div>
+        <div className="cover-top"><span>汉服写真 · 自然写真</span><button type="button" onClick={() => openPhoto(0)}>查看原幅 ↗</button></div>
         <div className="cover-bottom"><div><p className="cover-kicker">A PORTRAIT. A STORY.</p><h1>让此刻，<br /><span>成为故事。</span></h1><p className="cover-description">不用提前学会摆姿势，从简单的动作开始。</p></div><a className="cover-inquiry" href="#contact"><span>聊聊我的拍摄</span><span aria-hidden="true">↗</span></a></div>
         <div className="cover-foot"><span>钟家伦 / PHOTOGRAPHY</span><a href="#works">向下，寻找你的风格 ↓</a></div>
       </section>
@@ -106,13 +124,17 @@ export default function Home() {
               <img src={photographs[direction.index].src} alt={photographs[direction.index].alt} loading="lazy" />
               <span className="photo-open" aria-hidden="true">查看原幅 ↗</span>
             </button>
-            <div className="story-info"><div className="story-title"><span className="story-number">0{order + 1}</span><h3>{direction.title}</h3><span className="story-english">{direction.english}</span></div><div className="story-description"><p className="story-category">{direction.category}</p><p>{direction.description}</p><a className="underlined-link" href="#contact" onClick={() => chooseStyle(direction.style)}>我想拍这种风格 <span aria-hidden="true">↗</span></a></div></div>
+            <div className="story-info"><div className="story-title"><span className="story-number">0{order + 1}</span><h3>{direction.title}</h3><span className="story-english">{direction.english}</span></div><div className="story-description"><p className="story-category">{direction.category}</p><p>{direction.description}</p>{direction.bookable ? <a className="underlined-link" href="#contact" onClick={() => chooseStyle(direction.style)}>我想拍这种风格 <span aria-hidden="true">↗</span></a> : <a className="underlined-link" href="#archive-street" onClick={() => { const gallery = document.getElementById("archive-street") as HTMLDetailsElement | null; if (gallery) gallery.open = true; }}>看更多街头观察 <span aria-hidden="true">↗</span></a>}</div></div>
           </article>)}
         </div>
-        <details className="archive">
-          <summary><span>还有更多故事 <small> / 其余 11 张作品</small></span><span className="plus" aria-hidden="true">＋</span></summary>
-          <div className="archive-grid">{photographs.map((photo, index) => selected.includes(index) ? null : <button className="archive-photo" key={photo.src} onClick={() => openPhoto(index)} type="button" aria-label={`放大查看：${photo.alt}`}><img src={photo.src} alt={photo.alt} loading="lazy" /><span>{String(index + 1).padStart(2, "0")} / {photo.alt}</span></button>)}</div>
-        </details>
+        <div className="collection-heading"><h3>按作品类型，继续看。</h3><p>共 {photographs.length} 张作品 · 下方收录精选之外的照片</p></div>
+        {collections.map((collection) => {
+          const remaining = collection.indexes.filter((index) => !selected.includes(index));
+          return <details className="archive collection-archive" id={`archive-${collection.id}`} key={collection.id}>
+            <summary><span>{collection.title}<small> / 展开其余 {remaining.length} 张 · {collection.note}</small></span><span className="plus" aria-hidden="true">＋</span></summary>
+            <div className="archive-grid">{remaining.map((index) => <button className="archive-photo" key={photographs[index].src} onClick={() => openPhoto(index)} type="button" aria-label={`放大查看：${photographs[index].alt}`}><img src={photographs[index].src} alt={photographs[index].alt} loading="lazy" /><span>{String(index + 1).padStart(2, "0")} / {photographs[index].alt}</span></button>)}</div>
+          </details>;
+        })}
       </section>
 
       <section className="experience" id="experience">
@@ -136,14 +158,14 @@ export default function Home() {
 
       <section className="contact section" id="contact">
         <div className="contact-heading"><p className="section-label">YOUR STORY STARTS HERE</p><h2>下一位主角，<br /><em>是你。</em><span className="contact-arrow" aria-hidden="true">↗</span></h2><p>还没想好怎么拍也没关系。<br />说说你喜欢什么、担心什么，再一起找方向。</p><div className="contact-methods"><a href="tel:15220017059"><span>直接打个电话</span><strong>152 2001 7059 ↗</strong></a><a href={`mailto:3315466882@qq.com?subject=${encodeURIComponent("摄影咨询" + (chosenStyle ? " · " + chosenStyle : ""))}&body=${encodeURIComponent(inquiryMessage)}`}><span>带着想法发邮件</span><strong>3315466882@qq.com ↗</strong></a></div><p className="contact-note">具体费用、档期和交付安排，在预约前确认。</p></div>
-        <aside className="inquiry"><span className="inquiry-label">LET’S MAKE IT YOURS / 拍摄咨询</span><h3>你喜欢哪一种感觉？</h3><div className="style-options" aria-label="选择咨询的拍摄风格">{[...directions.map((d) => d.style), "还没想好，想聊聊"].map((style) => <button key={style} type="button" aria-pressed={chosenStyle === style} onClick={() => chooseStyle(style)}>{style}<span aria-hidden="true">{chosenStyle === style ? " ✓" : " ＋"}</span></button>)}</div><label htmlFor="inquiry-message">帮你准备好第一句话</label><textarea id="inquiry-message" value={inquiryMessage} readOnly rows={8} aria-describedby="inquiry-help" /><button className="button inquiry-copy" type="button" onClick={copyInquiry}>复制这段话，开始咨询 <span aria-hidden="true">↗</span></button><p id="inquiry-help" className="copy-status" role="status">{copyStatus || "复制后可在聊天中补充信息；此处不会提交预约。"}</p></aside>
+        <aside className="inquiry"><span className="inquiry-label">LET’S MAKE IT YOURS / 拍摄咨询</span><h3>你喜欢哪一种感觉？</h3><div className="style-options" aria-label="选择咨询的拍摄风格">{inquiryStyles.map((style) => <button key={style} type="button" aria-pressed={chosenStyle === style} onClick={() => chooseStyle(style)}>{style}<span aria-hidden="true">{chosenStyle === style ? " ✓" : " ＋"}</span></button>)}</div><label htmlFor="inquiry-message">帮你准备好第一句话</label><textarea id="inquiry-message" value={inquiryMessage} readOnly rows={8} aria-describedby="inquiry-help" /><button className="button inquiry-copy" type="button" onClick={copyInquiry}>复制这段话，开始咨询 <span aria-hidden="true">↗</span></button><p id="inquiry-help" className="copy-status" role="status">{copyStatus || "复制后可在聊天中补充信息；此处不会提交预约。"}</p></aside>
       </section>
 
       <footer><div className="footer-top"><a className="brand" href="#top"><strong>钟家伦<span className="brand-dot">.</span></strong><span>人物摄影</span></a><span>© 2026 钟家伦摄影</span><a href="#top">回到顶部 ↑</a></div><p className="footer-wordmark" aria-hidden="true">JIALUN<span>↗</span></p></footer>
       <div className="mobile-contact"><a href="#works">找我的风格</a><a href="#contact">聊聊我的拍摄 ↗</a></div>
 
       <dialog ref={dialogRef} className="lightbox" aria-label="作品大图预览" onCancel={closePhoto} onClose={() => setActiveIndex(null)} onClick={(event) => { if (event.target === event.currentTarget) closePhoto(); }} onKeyDown={(event) => { if (event.key === "ArrowRight") { event.preventDefault(); movePhoto(1); } if (event.key === "ArrowLeft") { event.preventDefault(); movePhoto(-1); } }}>
-        {activeIndex !== null && <><button className="lightbox-close" type="button" onClick={closePhoto} autoFocus>关闭 ×</button><figure><img src={photographs[activeIndex].src} alt={photographs[activeIndex].alt} /><figcaption><span>{String(activeIndex + 1).padStart(2, "0")} / 14</span><span>{photographs[activeIndex].alt}</span></figcaption></figure><div className="lightbox-controls"><button type="button" onClick={() => movePhoto(-1)} aria-label="上一张">← 上一张</button><a href="#contact" onClick={() => { chooseStyle(directions.find((d) => d.index === activeIndex)?.style || `作品 ${String(activeIndex + 1).padStart(2, "0")} 的感觉`); closePhoto(); }}>我想拍这种感觉 ↗</a><button type="button" onClick={() => movePhoto(1)} aria-label="下一张">下一张 →</button></div></>}
+        {activeIndex !== null && <><button className="lightbox-close" type="button" onClick={closePhoto} autoFocus>关闭 ×</button><figure><img src={photographs[activeIndex].src} alt={photographs[activeIndex].alt} /><figcaption><span>{String(activeIndex + 1).padStart(2, "0")} / {photographs.length}</span><span>{photographs[activeIndex].alt}{streetIndexes.includes(activeIndex) ? " · 街头观察 / 非预约客片" : ""}</span></figcaption></figure><div className="lightbox-controls"><button type="button" onClick={() => movePhoto(-1)} aria-label="上一张">← 上一张</button>{!streetIndexes.includes(activeIndex) && <a href="#contact" onClick={() => { chooseStyle(directions.find((d) => d.index === activeIndex)?.style || `作品 ${String(activeIndex + 1).padStart(2, "0")} 的感觉`); closePhoto(); }}>我想拍这种感觉 ↗</a>}<button type="button" onClick={() => movePhoto(1)} aria-label="下一张">下一张 →</button></div></>}
       </dialog>
     </main>
   );

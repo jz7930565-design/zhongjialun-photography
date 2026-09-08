@@ -89,6 +89,11 @@ summary::-webkit-details-marker { display: none; }
 .plus { display: inline-block; flex-shrink: 0; font-size: 1.5rem; line-height: 1; transition: transform .2s; font-weight: 400; }
 details[open]>summary>.plus { transform: rotate(45deg); }
 .archive { margin-top: 45px; border-bottom: 1px solid var(--ink); }
+.collection-heading { margin-top: 48px; padding-bottom: 22px; border-bottom: 1px solid var(--ink); }
+.collection-heading h3 { font-family: var(--serif); font-size: 1.6rem; }
+.collection-heading p { margin-top: 8px; color: var(--muted); font-size: .875rem; }
+.archive.collection-archive { margin-top: 0; }
+.collection-archive small { display: block; margin-top: 5px; }
 .archive>summary { display: flex; align-items: center; justify-content: space-between; padding: 18px 0; font-size: 1rem; }
 .archive small { font-size: .8125rem; color: var(--muted); }
 .archive-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 30px 20px; padding: 30px 0; }
