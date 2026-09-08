@@ -19,7 +19,12 @@ const photographs = [
   { src: "./work/portrait-14.webp", alt: "古建筑前撑伞的粉衣少女" },
 ];
 
-const selected = [0, 13, 9, 10];
+const selected = [13, 9, 10];
+const directions = [
+  { index: 13, title: "入画", english: "INTO THE SCENE", category: "古建 · 东方意境", description: "一把伞，一段长廊。把你放进有故事的风景。", style: "古建东方意境" },
+  { index: 9, title: "听风", english: "A MOMENT IN NATURE", category: "竹林 · 自然光影", description: "不急着看镜头，让风和光先找到你。", style: "竹林自然光影" },
+  { index: 10, title: "尽兴", english: "COLOUR YOUR STORY", category: "浓烈色彩 · 汉服人像", description: "让颜色大胆一点，让这一刻更有自己的表达。", style: "浓烈色彩汉服" },
+];
 const process = [
   { title: "聊一聊你想拍的自己", phase: "初次沟通", text: "可以发来喜欢的照片，也可以只说想要自然、安静或有故事感。一起梳理人物、风格与拍摄用途。", you: "拍摄人数、意向日期、预算范围，或几张喜欢的参考图。", confirm: "拍摄类型、城市与可选场景。" },
   { title: "把拍摄内容说清楚", phase: "方案与预约", text: "先明确一场拍摄包含什么，再安排档期。拍摄、妆造、服装和场地需要分别确认，避免到了现场才发现理解不同。", you: "选择拍摄方向，说明服装、妆造与出行需求。", confirm: "总费用、时长、服装套数、精修张数，以及预约和改期规则。" },
@@ -39,10 +44,11 @@ const questions = [
 
 export default function Home() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [chosenStyle, setChosenStyle] = useState("");
   const [copyStatus, setCopyStatus] = useState("");
   const dialogRef = useRef<HTMLDialogElement>(null);
   const returnFocus = useRef<HTMLElement | null>(null);
-
+  const inquiryMessage = `你好，我在你的网站看了作品，想咨询${chosenStyle ? "「" + chosenStyle + "」风格的" : "一组"}拍摄。\n意向日期：\n拍摄城市 / 人数：\n预算范围：\n妆造服装需求：\n想了解适合我的方案和报价。`;
   const openPhoto = (index: number) => {
     returnFocus.current = document.activeElement as HTMLElement;
     setActiveIndex(index);
@@ -53,7 +59,7 @@ export default function Home() {
     returnFocus.current?.focus();
   };
   const movePhoto = (direction: number) => setActiveIndex((index) => index === null ? null : (index + direction + photographs.length) % photographs.length);
-
+  const chooseStyle = (style: string) => { setChosenStyle(style); setCopyStatus(""); };
   useEffect(() => {
     if (activeIndex === null) return;
     if (!dialogRef.current?.open) dialogRef.current?.showModal();
@@ -61,14 +67,12 @@ export default function Home() {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = previousOverflow; };
   }, [activeIndex]);
-
   const copyInquiry = async () => {
-    const message = "你好，我想咨询拍摄。\n拍摄类型：\n拍摄人数：\n意向日期：\n拍摄城市：\n预算范围：\n喜欢的风格：\n是否需要妆造 / 服装：\n其他想法：";
     try {
-      await navigator.clipboard.writeText(message);
-      setCopyStatus("咨询清单已复制，可以粘贴到聊天中填写。");
+      await navigator.clipboard.writeText(inquiryMessage);
+      setCopyStatus("已复制。粘贴到聊天中，补充信息后发送给我即可。");
     } catch {
-      setCopyStatus("未能自动复制，请按上方清单把拍摄信息发给我。");
+      setCopyStatus("自动复制不可用，请长按或选中下方文字复制。");
     }
   };
 
@@ -76,81 +80,64 @@ export default function Home() {
     <main>
       <a className="skip-link" href="#works">跳到摄影作品</a>
       <header className="site-header">
-        <a className="brand" href="#top"><strong>钟家伦</strong><span>PHOTOGRAPHY</span></a>
-        <nav aria-label="主导航">
-          <a href="#works">作品</a><a href="#process">拍摄流程</a><a href="#guide">预约须知</a>
-          <a className="nav-contact" href="#contact">咨询拍摄 ↗</a>
-        </nav>
+        <a className="brand" href="#top" aria-label="钟家伦摄影，回到顶部"><strong>钟家伦<span className="brand-dot">.</span></strong><span>JIALUN / PHOTOGRAPHY</span></a>
+        <nav aria-label="主导航"><a href="#works">摄影作品</a><a href="#experience">拍摄体验</a><a href="#process">拍摄流程</a><a className="nav-contact" href="#contact">聊聊拍摄 <span aria-hidden="true">↗</span></a></nav>
       </header>
 
-      <section className="hero" id="top">
-        <div className="hero-copy">
-          <p className="eyebrow">钟家伦 · 人物摄影</p>
-          <h1>你自在的样子，<br /><em>值得被记录。</em></h1>
-          <p className="hero-description">人物写真、汉服与纪念拍摄。<br />从想法、准备到成片，一起把细节聊清楚。</p>
-          <div className="hero-actions"><a className="button solid" href="#works">看摄影作品 <span>↗</span></a><a className="text-link" href="#process">了解拍摄流程 ↓</a></div>
-          <div className="hero-note"><span>选风格</span><span>聊方案</span><span>安排拍摄</span></div>
-        </div>
-        <button className="hero-image" type="button" onClick={() => openPhoto(0)} aria-label="放大查看夕阳下的汉服写真">
-          <img src={photographs[0].src} alt={photographs[0].alt} fetchPriority="high" />
-          <span className="hero-caption">汉服写真 <span>查看完整画面 ↗</span></span>
-        </button>
+      <section className="cover" id="top">
+        <img className="cover-photo" src={photographs[0].src} alt={photographs[0].alt} fetchPriority="high" />
+        <div className="cover-top"><span>人物 · 汉服 · 纪念写真</span><button type="button" onClick={() => openPhoto(0)}>查看原幅 ↗</button></div>
+        <div className="cover-bottom"><div><p className="cover-kicker">A PORTRAIT. A STORY.</p><h1>让此刻，<br /><span>成为故事。</span></h1><p className="cover-description">不必成为别人。来拍一组，属于你的照片。</p></div><a className="cover-inquiry" href="#contact"><span>聊聊我的拍摄</span><span aria-hidden="true">↗</span></a></div>
+        <div className="cover-foot"><span>钟家伦 / PHOTOGRAPHY</span><a href="#works">向下，寻找你的风格 ↓</a></div>
       </section>
 
       <section className="works section" id="works">
-        <div className="section-heading"><div><p className="eyebrow">01 / 摄影作品</p><h2>先看照片，再聊你的想法。</h2></div><p>光线、表情和人与场景的关系。<br />找到你喜欢的感觉，作为沟通的起点。</p></div>
-        <div className="selected-grid">
-          {selected.map((index) => <button className="photo-card" key={index} onClick={() => openPhoto(index)} type="button" aria-label={`放大查看：${photographs[index].alt}`}>
-            <span className="photo-frame"><img src={photographs[index].src} alt={photographs[index].alt} loading="lazy" /></span>
-            <span className="photo-meta"><b>{String(index + 1).padStart(2, "0")}</b><span>{photographs[index].alt}</span><i>↗</i></span>
-          </button>)}
+        <div className="section-label"><span>01 / SELECTED STORIES</span><span>摄影作品选集</span></div>
+        <div className="works-heading"><h2>哪一种画面，<br /><span>让你想成为主角？</span></h2><p>从一张喜欢的照片开始。<br />选一个方向，我们再聊怎么拍得适合你。</p></div>
+        <div className="editorial-grid">
+          {directions.map((direction, order) => <article className={`story story-${order + 1}`} key={direction.index}>
+            <button type="button" className="story-photo" onClick={() => openPhoto(direction.index)} aria-label={`放大查看：${photographs[direction.index].alt}`}>
+              <img src={photographs[direction.index].src} alt={photographs[direction.index].alt} loading="lazy" />
+              <span className="photo-open" aria-hidden="true">查看原幅 ↗</span>
+            </button>
+            <div className="story-info"><div className="story-title"><span className="story-number">0{order + 1}</span><h3>{direction.title}</h3><span className="story-english">{direction.english}</span></div><div className="story-description"><p className="story-category">{direction.category}</p><p>{direction.description}</p><a className="underlined-link" href="#contact" onClick={() => chooseStyle(direction.style)}>我想拍这种风格 <span aria-hidden="true">↗</span></a></div></div>
+          </article>)}
         </div>
-        <details className="more-works">
-          <summary>展开其余 10 张作品 <span aria-hidden="true">＋</span></summary>
-          <div className="archive-grid">
-            {photographs.map((photo, index) => selected.includes(index) ? null : <button className="photo-card" key={photo.src} onClick={() => openPhoto(index)} type="button" aria-label={`放大查看：${photo.alt}`}>
-              <img src={photo.src} alt={photo.alt} loading="lazy" /><span className="photo-meta"><b>{String(index + 1).padStart(2, "0")}</b><span>{photo.alt}</span></span>
-            </button>)}
-          </div>
+        <details className="archive">
+          <summary><span>还有更多故事 <small> / 其余 11 张作品</small></span><span className="plus" aria-hidden="true">＋</span></summary>
+          <div className="archive-grid">{photographs.map((photo, index) => selected.includes(index) ? null : <button className="archive-photo" key={photo.src} onClick={() => openPhoto(index)} type="button" aria-label={`放大查看：${photo.alt}`}><img src={photo.src} alt={photo.alt} loading="lazy" /><span>{String(index + 1).padStart(2, "0")} / {photo.alt}</span></button>)}</div>
         </details>
       </section>
 
-      <section className="process section" id="process">
-        <div className="process-intro"><p className="eyebrow">02 / 拍摄流程</p><h2>从第一次联系，<br />到收到照片。</h2><p>不知道怎么准备也没关系。<br />沿着这六步，逐项确认拍摄安排。</p><a className="text-link" href="#contact">带着你的想法来聊聊 ↗</a><span className="process-number" aria-hidden="true">01—06</span></div>
-        <ol className="process-list">
-          {process.map((step, index) => <li key={step.phase}><span className="step-number">{String(index + 1).padStart(2, "0")}</span><div><p className="step-phase">{step.phase}</p><h3>{step.title}</h3><p>{step.text}</p><dl><div><dt>你可以准备</dt><dd>{step.you}</dd></div><div><dt>一起确认</dt><dd>{step.confirm}</dd></div></dl></div></li>)}
-        </ol>
-      </section>
-
-      <section className="booking-guide section" id="guide">
-        <div className="section-heading"><div><p className="eyebrow">03 / 预约须知</p><h2>先说清楚，才能放心拍。</h2></div><p>具体金额与交付安排因方案而异。<br />预约前，把以下内容逐项确认。</p></div>
-        <div className="agreement-grid">
-          <article><span>01 / 拍什么</span><h3>拍摄内容</h3><ul><li>拍摄人数、类型与风格参考</li><li>日期、时长、地点与服装套数</li><li>妆造、服装、道具的提供方式</li></ul></article>
-          <article><span>02 / 付什么</span><h3>费用与档期</h3><ul><li>总费用、预约款与尾款安排</li><li>场地、门票、交通等额外支出</li><li>迟到、取消、天气与改期安排</li></ul></article>
-          <article><span>03 / 收到什么</span><h3>成片与后续</h3><ul><li>精修张数、底片范围与文件规格</li><li>交片时间、修改范围与次数</li><li>照片公开展示与文件保留时间</li></ul></article>
+      <section className="experience" id="experience">
+        <div className="experience-photo"><img src={photographs[8].src} alt={photographs[8].alt} loading="lazy" /><span>小憩 / 人物摄影作品</span></div>
+        <div className="experience-copy"><p className="section-label">02 / THE EXPERIENCE</p><h2>第一次拍照，<br />也不必急着<br /><em>“表现很好”。</em></h2><p className="experience-lead">我是钟家伦。比起一套标准的姿势，<br />我更想找到你在镜头前舒服的状态。</p>
+          <div className="care-list"><div><span>01</span><div><h3>没想好风格？先聊喜欢什么。</h3><p>几张参考图、喜欢的颜色，或者一次想纪念的经历，都能成为拍摄的起点。</p></div></div><div><span>02</span><div><h3>不会摆姿势？从简单动作开始。</h3><p>走动、转身、看向远处。不用背动作，拍摄时可以随时交流感受和角度。</p></div></div><div><span>03</span><div><h3>担心修得不像自己？提前聊偏好。</h3><p>喜欢自然纹理，还是更细致的处理？先把肤色、质感和调整范围说清楚。</p></div></div></div>
+          <a className="underlined-link" href="#contact">说说我的想法 <span aria-hidden="true">↗</span></a>
         </div>
-        <div className="preparation"><h3>拍摄前的一点准备</h3><p>提前试穿服装，检查鞋子与配件；带好补妆用品、饮水及必要的个人物品。外景可准备方便步行的鞋子。儿童拍摄时，提前沟通休息、用餐与陪同安排。</p></div>
       </section>
 
-      <section className="faq section" id="questions">
-        <div><p className="eyebrow">04 / 常见问题</p><h2>你可能还想问。</h2><p>有其他顾虑，也欢迎在预约前直接告诉我。</p></div>
-        <div className="faq-list">{questions.map(([title, answer]) => <details key={title}><summary>{title}<span aria-hidden="true">＋</span></summary><p>{answer}</p></details>)}</div>
+      <section className="journey section" id="process">
+        <div className="journey-intro"><p className="section-label">03 / HOW IT WORKS</p><h2>你负责期待，<br />细节一起安排。</h2><p>从第一次联系，到收到成片。<br />每一步都有要聊清楚的事。</p><a className="underlined-link" href="#contact">先问问适合我的方案 ↗</a></div>
+        <ol className="journey-list">{process.map((step, index) => <li key={step.phase}><details open={index === 0 ? true : undefined}><summary><span className="step-number">0{index + 1}</span><span><small>{step.phase}</small><strong>{step.title}</strong></span><span className="plus" aria-hidden="true">＋</span></summary><div className="step-detail"><p>{step.text}</p><dl><div><dt>你可以准备</dt><dd>{step.you}</dd></div><div><dt>一起确认</dt><dd>{step.confirm}</dd></div></dl></div></details></li>)}</ol>
       </section>
 
-      <section className="about section" id="about">
-        <img src={photographs[8].src} alt={photographs[8].alt} loading="lazy" />
-        <div><p className="eyebrow">关于摄影师 / 钟家伦</p><h2>好照片之外，<br />也在意你的拍摄感受。</h2><p>我关注人物的表情、光线与自然状态。喜欢的照片可以成为参考，但更重要的是找到适合你的表达。</p><p>沟通时可以直说你喜欢什么、担心什么。清楚的准备、现场的交流，以及一致的修图方向，都是一场拍摄的一部分。</p></div>
+      <section className="practical section" id="guide">
+        <div className="section-label"><span>04 / BEFORE WE SHOOT</span><span>把顾虑，留在拍摄之前。</span></div>
+        <details className="agreement"><summary><span>预约前，需要确认些什么？</span><span className="plus" aria-hidden="true">＋</span></summary><div className="agreement-grid"><article><h3>拍摄内容</h3><p>人数与风格、日期与时长、地点与服装套数，以及妆造、服装和道具的提供方式。</p></article><article><h3>费用与档期</h3><p>总费用、预约款与尾款，场地、门票和交通等额外支出，迟到、取消和改期安排。</p></article><article><h3>成片与后续</h3><p>精修张数、底片范围、交片日期、修改范围与次数，以及公开展示授权和文件保留时间。</p></article></div><p className="preparation">出发前：试穿服装，核对鞋子与配件，带好饮水和个人用品；外景可准备方便步行的鞋子。儿童同行时，提前沟通休息、用餐与陪同安排。</p></details>
+        <div className="faq-list">{questions.map(([title, answer]) => <details key={title}><summary>{title}<span className="plus" aria-hidden="true">＋</span></summary><p>{answer}</p></details>)}</div>
       </section>
 
       <section className="contact section" id="contact">
-        <div><p className="eyebrow">开始一次拍摄</p><h2>把你的想法，<br /><em>慢慢说给我听。</em></h2><p>有参考图可以一起发来；还没想好风格，<br />就先说说为什么想拍这组照片。</p><div className="contact-links"><a href="tel:15220017059"><small>电话咨询</small><span>152 2001 7059 ↗</span></a><a href="mailto:3315466882@qq.com"><small>邮箱联系</small><span>3315466882@qq.com ↗</span></a></div></div>
-        <aside className="inquiry-card"><p className="eyebrow">初次咨询，可以这样开始</p><h3>“你好，我想约一组照片。”</h3><ul><li><span>拍什么</span>写真 / 汉服 / 纪念拍摄</li><li><span>几个人</span>人数与是否有儿童同行</li><li><span>何时何地</span>意向日期与拍摄城市</li><li><span>怎么准备</span>预算、风格、妆造与服装需求</li></ul><button className="button solid" type="button" onClick={copyInquiry}>复制咨询清单 <span>↗</span></button><p className="copy-status" role="status">{copyStatus || "复制后填写即可；这不会提交预约或产生费用。"}</p></aside>
+        <div className="contact-heading"><p className="section-label">YOUR STORY STARTS HERE</p><h2>下一位主角，<br /><em>是你。</em><span className="contact-arrow" aria-hidden="true">↗</span></h2><p>不需要先想好一切。<br />告诉我喜欢的感觉，问问方案和报价。</p><div className="contact-methods"><a href="tel:15220017059"><span>直接打个电话</span><strong>152 2001 7059 ↗</strong></a><a href={`mailto:3315466882@qq.com?subject=${encodeURIComponent("摄影咨询" + (chosenStyle ? " · " + chosenStyle : ""))}&body=${encodeURIComponent(inquiryMessage)}`}><span>带着想法发邮件</span><strong>3315466882@qq.com ↗</strong></a></div><p className="contact-note">具体费用、档期和交付安排，在预约前确认。</p></div>
+        <aside className="inquiry"><span className="inquiry-label">LET’S MAKE IT YOURS / 拍摄咨询</span><h3>你喜欢哪一种感觉？</h3><div className="style-options" aria-label="选择咨询的拍摄风格">{[...directions.map((d) => d.style), "还没想好，想聊聊"].map((style) => <button key={style} type="button" aria-pressed={chosenStyle === style} onClick={() => chooseStyle(style)}>{style}<span aria-hidden="true">{chosenStyle === style ? " ✓" : " ＋"}</span></button>)}</div><label htmlFor="inquiry-message">帮你准备好第一句话</label><textarea id="inquiry-message" value={inquiryMessage} readOnly rows={6} aria-describedby="inquiry-help" /><button className="button inquiry-copy" type="button" onClick={copyInquiry}>复制这段话，开始咨询 <span aria-hidden="true">↗</span></button><p id="inquiry-help" className="copy-status" role="status">{copyStatus || "复制后可在聊天中补充信息；此处不会提交预约。"}</p></aside>
       </section>
-      <footer><a className="brand" href="#top"><strong>钟家伦</strong><span>PHOTOGRAPHY</span></a><span>© 2026 钟家伦摄影</span><a href="#top">回到顶部 ↑</a></footer>
-      <div className="mobile-contact"><a href="#process">看拍摄流程</a><a href="#contact">咨询拍摄 ↗</a></div>
+
+      <footer><div className="footer-top"><a className="brand" href="#top"><strong>钟家伦<span className="brand-dot">.</span></strong><span>人物摄影</span></a><span>© 2026 钟家伦摄影</span><a href="#top">回到顶部 ↑</a></div><p className="footer-wordmark" aria-hidden="true">JIALUN<span>↗</span></p></footer>
+      <div className="mobile-contact"><a href="#works">找我的风格</a><a href="#contact">聊聊我的拍摄 ↗</a></div>
 
       <dialog ref={dialogRef} className="lightbox" aria-label="作品大图预览" onCancel={closePhoto} onClose={() => setActiveIndex(null)} onClick={(event) => { if (event.target === event.currentTarget) closePhoto(); }} onKeyDown={(event) => { if (event.key === "ArrowRight") { event.preventDefault(); movePhoto(1); } if (event.key === "ArrowLeft") { event.preventDefault(); movePhoto(-1); } }}>
-        {activeIndex !== null && <><button className="lightbox-close" type="button" onClick={closePhoto} autoFocus>关闭 ×</button><figure><img src={photographs[activeIndex].src} alt={photographs[activeIndex].alt} /><figcaption><span>{String(activeIndex + 1).padStart(2, "0")} / 14</span><span>{photographs[activeIndex].alt}</span></figcaption></figure><div className="lightbox-controls"><button type="button" onClick={() => movePhoto(-1)} aria-label="上一张">← 上一张</button><button type="button" onClick={() => movePhoto(1)} aria-label="下一张">下一张 →</button></div></>}
+        {activeIndex !== null && <><button className="lightbox-close" type="button" onClick={closePhoto} autoFocus>关闭 ×</button><figure><img src={photographs[activeIndex].src} alt={photographs[activeIndex].alt} /><figcaption><span>{String(activeIndex + 1).padStart(2, "0")} / 14</span><span>{photographs[activeIndex].alt}</span></figcaption></figure><div className="lightbox-controls"><button type="button" onClick={() => movePhoto(-1)} aria-label="上一张">← 上一张</button><a href="#contact" onClick={() => { chooseStyle(directions.find((d) => d.index === activeIndex)?.style || `作品 ${String(activeIndex + 1).padStart(2, "0")} 的感觉`); closePhoto(); }}>我想拍这种感觉 ↗</a><button type="button" onClick={() => movePhoto(1)} aria-label="下一张">下一张 →</button></div></>}
       </dialog>
     </main>
   );
