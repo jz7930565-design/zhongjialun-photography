@@ -298,13 +298,22 @@ footer { background: #191919; color: #eee; padding: 0 4vw; overflow: hidden; }
   .lightbox-controls { gap: 8px; padding-inline: 10px; bottom: max(22px,env(safe-area-inset-bottom)); }
   .lightbox-controls button,.lightbox-controls a { padding: 10px 9px; font-size: .8125rem; }
 }
-.qq-contact { padding-bottom: 28px; margin-bottom: 28px; border-bottom: 1px solid var(--line); scroll-margin-top: 100px; }
+.qq-contact { padding: 26px; margin-bottom: 34px; background: #fcf3f0; border-radius: 24px; border: 6px solid #f5e7e1; box-shadow: inset 0 0 0 1px #fff; scroll-margin-top: 100px; }
+.qq-contact .inquiry-label { color: #853327; }
+.inquiry .qq-contact h3 { margin-top: 14px; font-size: clamp(1.4rem,2.3vw,1.85rem); }
 .qq-contact>p { margin-top: 12px; }
-.qq-number { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin: 20px 0; }
+.qq-number { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin: 16px 0 0; }
 .qq-number>span { font-size: .875rem; color: var(--muted); }
-.qq-number strong { font-size: clamp(1.3rem,3vw,1.8rem); font-weight: 500; letter-spacing: .03em; user-select: all; }
-.qq-number button { background: transparent; color: var(--ink); border: 1px solid #bbb; min-height: 44px; padding: 8px 12px; font-size: .875rem; }
-.qq-open { width: 100%; display: flex; justify-content: space-between; }
+.qq-number strong { font-size: 1rem; font-weight: 500; letter-spacing: .03em; user-select: all; }
+.qq-number button { background: transparent; color: #853327; border: 0; min-height: 44px; padding: 8px 4px; font-size: .875rem; text-decoration: underline; text-underline-offset: 4px; }
+.qq-open { width: 100%; display: flex; justify-content: space-between; min-height: 76px; margin-top: 24px; padding: 12px 14px 12px 26px; gap: 12px; border-radius: 999px; background: #c93628; color: #fff; font-size: clamp(1.125rem,2vw,1.375rem); font-weight: 600; box-shadow: 0 10px 28px rgb(157 42 26 / 14%); transition: transform 240ms cubic-bezier(.32,.72,0,1); }
+.qq-open-arrow { display: grid; place-items: center; flex: 0 0 46px; height: 46px; border-radius: 50%; background: #fff; color: #a5281d; font-size: 1.65rem; transition: transform 240ms cubic-bezier(.32,.72,0,1); }
+@media(hover:hover) { .qq-open:hover { background: #a5281d; transform: translateY(-2px); } .qq-open:hover .qq-open-arrow { transform: translate(2px,-1px); } }
+.qq-open:active { transform: scale(.98); }
+.qq-open:focus-visible { outline: 3px solid #181818; outline-offset: 5px; }
+.inquiry .inquiry-copy { background: #242424; }
+.inquiry .inquiry-copy:hover { background: #444; }
+@media(max-width:700px) { .qq-contact { padding: 20px 14px; border-width: 4px; } .qq-open { padding-left: 20px; min-height: 70px; } .qq-open-arrow { flex-basis: 40px; height: 40px; } }
 .qq-contact .qq-help,.qq-status { font-size: .875rem; line-height: 1.7; color: var(--muted); }
 .qq-status:empty { display: none; }
 /* Four albums: full-image covers with quiet, consistent editorial labels. */

@@ -218,11 +218,11 @@ export default function Home() {
             <span className="inquiry-label">LET’S TALK / QQ 咨询</span>
             <h3 id="qq-heading">在 QQ，聊聊你的拍摄。</h3>
             <p>喜欢哪一组、想什么时候拍，都可以直接告诉我。</p>
-            <div className="qq-number"><span>QQ</span><strong>{qqNumber}</strong><button type="button" onClick={copyQqNumber}>复制号码</button></div>
             <a className="button qq-open" href={qqDesktopLink} onClick={(event) => {
               event.currentTarget.href = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1) ? qqMobileLink : qqDesktopLink;
               setQqStatus("正在尝试打开 QQ；若没有响应，请复制号码后在 QQ 中搜索。");
-            }}>打开 QQ 咨询 <span aria-hidden="true">↗</span></a>
+            }}><span>打开 QQ 咨询</span><span className="qq-open-arrow" aria-hidden="true">↗</span></a>
+            <div className="qq-number"><span>QQ</span><strong>{qqNumber}</strong><button type="button" onClick={copyQqNumber}>复制号码</button></div>
             <p className="qq-help">需已安装 QQ。若浏览器拦截跳转，或无法发起临时会话，请在 QQ 搜索号码并添加好友。可先在下方复制咨询文字，再粘贴发送。</p>
             <p className="qq-status" role="status">{qqStatus}</p>
           </section>
