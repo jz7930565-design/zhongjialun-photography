@@ -60,6 +60,9 @@ const collections = [
   { id: "street", title: "街头观察", note: "个人观察记录，非预约客片", indexes: streetIndexes },
 ];
 const inquiryStyles = ["汉服写真", "自然写真", "儿童汉服", "还没想好，想聊聊"];
+const qqNumber = "3315466882";
+const qqDesktopLink = `tencent://message/?uin=${qqNumber}&Site=qq&Menu=yes`;
+const qqMobileLink = `mqqwpa://im/chat?chat_type=wpa&uin=${qqNumber}&version=1&src_type=web`;
 const preparations = [
   { title: "先了解你，而不是先套风格。", text: "聊聊你喜欢的照片、想留下的感觉，以及不喜欢的角度和动作，再确定准备的方向。" },
   { title: "研究地点，也想好怎么构图。", text: "在网上查找场景、构图和动作参考，再结合你的喜好与实际条件，整理拍摄方向。" },
@@ -91,6 +94,7 @@ export default function Home() {
   const [galleryTitle, setGalleryTitle] = useState("摄影作品");
   const [inquiry, setInquiry] = useState({ date: "", city: "", people: "", budget: "", notes: "" });
   const [copyStatus, setCopyStatus] = useState("");
+  const [qqStatus, setQqStatus] = useState("");
   const dialogRef = useRef<HTMLDialogElement>(null);
   const returnFocus = useRef<HTMLElement | null>(null);
   const inquiryMessage = `你好，我想咨询${chosenStyle && chosenStyle !== "还没想好，想聊聊" ? "「" + chosenStyle + "」" : ""}拍摄。${reference ? "\n参考作品：" + reference : ""}\n意向日期：${inquiry.date || "待商量"}\n城市 / 人数：${inquiry.city || "待商量"} / ${inquiry.people || "待确认"}\n预算范围：${inquiry.budget || "想先了解报价"}\n拍摄想法与顾虑：${inquiry.notes || "想一起聊聊适合我的方向"}\n希望了解方案、费用和可约时间。`;
@@ -128,6 +132,14 @@ export default function Home() {
       setCopyStatus("已复制。粘贴到聊天中，补充信息后发送给我即可。");
     } catch {
       setCopyStatus("自动复制不可用，请展开“预览整理好的咨询文字”，长按或选中文字复制。");
+    }
+  };
+  const copyQqNumber = async () => {
+    try {
+      await navigator.clipboard.writeText(qqNumber);
+      setQqStatus("QQ 号已复制，打开 QQ 搜索号码即可。");
+    } catch {
+      setQqStatus("自动复制不可用，请长按或选中上方 QQ 号复制。");
     }
   };
 
@@ -202,6 +214,18 @@ export default function Home() {
       <section className="contact section" id="contact">
         <div className="contact-heading"><p className="section-label">YOUR STORY STARTS HERE</p><h2>下一位主角，<br /><em>是你。</em><span className="contact-arrow" aria-hidden="true">↗</span></h2><p>还没想好怎么拍也没关系。<br />说说你喜欢什么、担心什么，再一起找方向。</p><div className="contact-methods"><a href="tel:15220017059"><span>直接打个电话</span><strong>152 2001 7059 ↗</strong></a><a href={`mailto:3315466882@qq.com?subject=${encodeURIComponent("摄影咨询" + (chosenStyle ? " · " + chosenStyle : ""))}&body=${encodeURIComponent(inquiryMessage)}`}><span>带着想法发邮件</span><strong>3315466882@qq.com ↗</strong></a></div><p className="contact-note">具体费用、档期和交付安排，在预约前确认。</p></div>
         <aside className="inquiry">
+          <section className="qq-contact" id="qq" aria-labelledby="qq-heading">
+            <span className="inquiry-label">LET’S TALK / QQ 咨询</span>
+            <h3 id="qq-heading">在 QQ，聊聊你的拍摄。</h3>
+            <p>喜欢哪一组、想什么时候拍，都可以直接告诉我。</p>
+            <div className="qq-number"><span>QQ</span><strong>{qqNumber}</strong><button type="button" onClick={copyQqNumber}>复制号码</button></div>
+            <a className="button qq-open" href={qqDesktopLink} onClick={(event) => {
+              event.currentTarget.href = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1) ? qqMobileLink : qqDesktopLink;
+              setQqStatus("正在尝试打开 QQ；若没有响应，请复制号码后在 QQ 中搜索。");
+            }}>打开 QQ 咨询 <span aria-hidden="true">↗</span></a>
+            <p className="qq-help">需已安装 QQ。若浏览器拦截跳转，或无法发起临时会话，请在 QQ 搜索号码并添加好友。可先在下方复制咨询文字，再粘贴发送。</p>
+            <p className="qq-status" role="status">{qqStatus}</p>
+          </section>
           <span className="inquiry-label">LET’S MAKE IT YOURS / 拍摄咨询</span>
           <h3>从你的想法开始。</h3>
           <p className="inquiry-intro">知道多少就填多少，没想好的可以留空。</p>

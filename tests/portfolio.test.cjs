@@ -9,7 +9,7 @@ const project = path.resolve(__dirname, '..');
 const source = fs.readFileSync(path.join(project, 'app/page.tsx'), 'utf8');
 const data = new Function(source.slice(source.indexOf('const photographs'), source.indexOf('export default')) + '; return { photographs, caseIndexes, collections, selected, directions };')();
 
-function createPage() {
+function createPage(options = {}) {
   const state = [];
   let cursor = 0;
   let copied = '';
@@ -33,7 +33,7 @@ function createPage() {
     module,
     require: (name) => name === 'react' ? hooks : require(name),
     document: { activeElement: { focus() {} }, body: { style: {} } },
-    navigator: { clipboard: { writeText: async (text) => { copied = text; } } },
+    navigator: { userAgent: options.userAgent || 'Windows', platform: options.platform || 'Win32', maxTouchPoints: options.maxTouchPoints || 0, clipboard: { writeText: async (text) => { if (options.clipboardFails) throw new Error('Clipboard denied'); copied = text; } } },
   });
   return {
     render() { cursor = 0; return module.exports.default(); },
@@ -56,6 +56,30 @@ function find(tree, predicate) {
   assert.ok(result, 'Expected element exists');
   return result;
 }
+
+test('QQ click uses the confirmed number on desktop, phones and iPad without sending messages', () => {
+  for (const options of [{}, { userAgent: 'Android' }, { userAgent: 'iPhone' }, { platform: 'MacIntel', maxTouchPoints: 5 }]) {
+    const page = createPage(options);
+    const link = find(page.render(), n => n.props?.className === 'button qq-open');
+    const event = { currentTarget: { href: link.props.href } };
+    link.props.onClick(event);
+    const target = new URL(event.currentTarget.href);
+    assert.equal(target.searchParams.get('uin'), '3315466882');
+    assert.equal(target.protocol, Object.keys(options).length ? 'mqqwpa:' : 'tencent:');
+    assert.equal(target.searchParams.has('text'), false);
+    assert.match(text(find(page.render(), n => n.props?.className === 'qq-status')), /尝试打开/);
+  }
+});
+
+test('QQ number copying reports success and failure honestly', async () => {
+  for (const clipboardFails of [false, true]) {
+    const page = createPage({ clipboardFails });
+    await find(page.render(), n => n.type === 'button' && text(n) === '复制号码').props.onClick();
+    const status = text(find(page.render(), n => n.props?.className === 'qq-status'));
+    assert.match(status, clipboardFails ? /自动复制不可用/ : /QQ 号已复制/);
+    assert.equal(page.copied(), clipboardFails ? '' : '3315466882');
+  }
+});
 
 test('all 38 works remain accessible; the confirmed case is exactly 01, 02, 13, 15', () => {
   assert.deepEqual(data.caseIndexes, [0, 1, 12, 14]);

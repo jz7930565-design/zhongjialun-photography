@@ -298,6 +298,15 @@ footer { background: #191919; color: #eee; padding: 0 4vw; overflow: hidden; }
   .lightbox-controls { gap: 8px; padding-inline: 10px; bottom: max(22px,env(safe-area-inset-bottom)); }
   .lightbox-controls button,.lightbox-controls a { padding: 10px 9px; font-size: .8125rem; }
 }
+.qq-contact { padding-bottom: 28px; margin-bottom: 28px; border-bottom: 1px solid var(--line); scroll-margin-top: 100px; }
+.qq-contact>p { margin-top: 12px; }
+.qq-number { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin: 20px 0; }
+.qq-number>span { font-size: .875rem; color: var(--muted); }
+.qq-number strong { font-size: clamp(1.3rem,3vw,1.8rem); font-weight: 500; letter-spacing: .03em; user-select: all; }
+.qq-number button { background: transparent; color: var(--ink); border: 1px solid #bbb; min-height: 44px; padding: 8px 12px; font-size: .875rem; }
+.qq-open { width: 100%; display: flex; justify-content: space-between; }
+.qq-contact .qq-help,.qq-status { font-size: .875rem; line-height: 1.7; color: var(--muted); }
+.qq-status:empty { display: none; }
 /* Four albums: full-image covers with quiet, consistent editorial labels. */
 .works .editorial-grid { align-items: start; }
 .works .story { width: 100%; padding-top: 0; min-width: 0; }
