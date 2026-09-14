@@ -7,7 +7,7 @@ const ts = require('typescript');
 
 const project = path.resolve(__dirname, '..');
 const source = fs.readFileSync(path.join(project, 'app/page.tsx'), 'utf8');
-const data = new Function(source.slice(source.indexOf('const photographs'), source.indexOf('export default')) + '; return { photographs, caseIndexes, collections, selected };')();
+const data = new Function(source.slice(source.indexOf('const photographs'), source.indexOf('export default')) + '; return { photographs, caseIndexes, collections, selected, directions };')();
 
 function createPage() {
   const state = [];
@@ -57,15 +57,38 @@ function find(tree, predicate) {
   return result;
 }
 
-test('all 32 works remain accessible; the confirmed case is exactly 01, 02, 13, 15', () => {
+test('all 38 works remain accessible; the confirmed case is exactly 01, 02, 13, 15', () => {
   assert.deepEqual(data.caseIndexes, [0, 1, 12, 14]);
-  assert.equal(data.photographs.length, 32);
+  assert.equal(data.photographs.length, 38);
   const grouped = data.collections.flatMap((group) => group.indexes);
-  assert.equal(grouped.length, 32);
-  assert.equal(new Set(grouped).size, 32);
+  assert.equal(grouped.length, 38);
+  assert.equal(new Set(grouped).size, 38);
   const additional = grouped.filter((index) => !data.selected.includes(index));
-  assert.equal(additional.length, 26);
+  assert.equal(additional.length, 16);
   for (const photo of data.photographs) assert.ok(fs.existsSync(path.join(project, 'public', photo.src)));
+});
+
+test('four series have complete unique sequences and carry their title into inquiries', () => {
+  assert.deepEqual(data.directions.map(s => s.indexes.length), [4, 5, 4, 5]);
+  assert.equal(new Set(data.directions.flatMap(s => s.indexes)).size, 18);
+  for (const series of data.directions) {
+    const page = createPage();
+    let tree = page.render();
+    find(tree, n => n.props?.['aria-label'] === `浏览系列：${series.title}`).props.onClick();
+    for (let i = 0; i < series.indexes.length + 1; i++) {
+      tree = page.render();
+      const dialog = find(tree, n => n.type === 'dialog');
+      assert.equal(find(dialog, n => n.type === 'img').props.src, data.photographs[series.indexes[i % series.indexes.length]].src);
+      find(dialog, n => n.props?.['aria-label'] === '下一张').props.onClick();
+    }
+    tree = page.render();
+    const dialog = find(tree, n => n.type === 'dialog');
+    find(dialog, n => n.type === 'a' && n.props?.href === '#contact').props.onClick();
+    tree = page.render();
+    const message = find(tree, n => n.props?.['aria-label'] === '整理好的咨询文字').props.value;
+    assert.ok(message.includes(`参考作品：${series.title}`));
+    assert.ok(message.includes(series.style));
+  }
 });
 
 test('case lightbox cycles within its four photographs and resets on another gallery', () => {

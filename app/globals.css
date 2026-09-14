@@ -298,6 +298,16 @@ footer { background: #191919; color: #eee; padding: 0 4vw; overflow: hidden; }
   .lightbox-controls { gap: 8px; padding-inline: 10px; bottom: max(22px,env(safe-area-inset-bottom)); }
   .lightbox-controls button,.lightbox-controls a { padding: 10px 9px; font-size: .8125rem; }
 }
+/* Four albums: full-image covers with quiet, consistent editorial labels. */
+.works .editorial-grid { align-items: start; }
+.works .story { width: 100%; padding-top: 0; min-width: 0; }
+.works .story-photo { background: #f2f2f2; }
+.works .story-photo img { width: 100%; height: 560px; object-fit: contain; }
+.works .story-english { display: none; }
+.works .story-info { margin-bottom: 32px; }
+@media(max-width:700px) {
+  .works .story-photo img { height: auto; max-height: 72vh; object-fit: contain; }
+}
 /* Case-led portfolio and a clearer inquiry journey. */
 .editorial-grid { grid-template-columns: 1fr 1fr; gap: 6vw; }
 .story-1 { width: 90%; }

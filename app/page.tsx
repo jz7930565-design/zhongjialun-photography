@@ -5,13 +5,13 @@ import { useEffect, useRef, useState } from "react";
 const photographs = [
   { src: "./work/portrait-01.webp", alt: "夕阳下行走的汉服少女" },
   { src: "./work/portrait-02.webp", alt: "古建筑前的双人汉服肖像" },
-  { src: "./work/portrait-03.webp", alt: "宫门前的蓝色汉服少女" },
-  { src: "./work/portrait-04.webp", alt: "建筑中轴线上的持伞少女" },
+  { src: "./work/dream-door.webp", alt: "宫门前的蓝色汉服少女" },
+  { src: "./work/dream-courtyard.webp", alt: "建筑中轴线上的持伞少女" },
   { src: "./work/portrait-05.webp", alt: "红灯笼前的粉色汉服少女" },
   { src: "./work/portrait-06.webp", alt: "山石旁读书的红衣少年" },
   { src: "./work/portrait-07.webp", alt: "古建筑栏杆旁的粉衣少女" },
-  { src: "./work/portrait-08.webp", alt: "草地边共读画卷的少年少女" },
-  { src: "./work/portrait-09.webp", alt: "书案前小憩的蓝衣少女" },
+  { src: "./work/dream-reading.webp", alt: "草地边共读画卷的少年少女" },
+  { src: "./work/dream-rest.webp", alt: "书案前小憩的蓝衣少女" },
   { src: "./work/portrait-10.webp", alt: "竹林中撑伞的蓝衣少女" },
   { src: "./work/portrait-11.webp", alt: "红色书法布景中的汉服人像" },
   { src: "./work/portrait-12.webp", alt: "书案前阅读的蓝衣少年" },
@@ -22,7 +22,7 @@ const photographs = [
   { src: "./work/collection-17.webp", alt: "草丛中仰望飞机的白衣背影" },
   { src: "./work/collection-18.webp", alt: "蓝天堤岸上回头的白衣人像" },
   { src: "./work/collection-19.webp", alt: "草丛与蓝天之间的白衣侧脸" },
-  { src: "./work/collection-20.webp", alt: "墙边抬袖的红衣汉服侧脸" },
+  { src: "./work/red-final.webp", alt: "墙边抬袖的红衣汉服侧脸" },
   { src: "./work/collection-21.webp", alt: "粉紫晚霞下坐在江边的两个人" },
   { src: "./work/collection-22.webp", alt: "水边看手机的人物街拍" },
   { src: "./work/collection-23.webp", alt: "金色落日下坐在江边的人物剪影" },
@@ -35,23 +35,31 @@ const photographs = [
   { src: "./work/collection-30.webp", alt: "园林木桥上远望的粉衣汉服人像" },
   { src: "./work/collection-31.webp", alt: "窗边手持书册的粉衣汉服人像" },
   { src: "./work/collection-32.webp", alt: "荷塘边手持团扇的粉衣汉服侧影" },
+  { src: "./work/child-1.webp", alt: "宫门前抱着藤球的红衣小朋友" },
+  { src: "./work/child-2.webp", alt: "园林中扶帽持扇的小朋友" },
+  { src: "./work/child-3.webp", alt: "草木间回头微笑的小朋友" },
+  { src: "./work/child-4.webp", alt: "石狮旁抬手玩耍的小朋友" },
+  { src: "./work/garden-umbrella.webp", alt: "青瓦回廊前举起纸伞的粉衣少女" },
+  { src: "./work/dream-umbrella.webp", alt: "山石草木间撑纸伞的蓝衣少女" },
 ];
 
 const directions = [
-  { index: 25, title: "入画", english: "INTO THE SCENE", category: "汉服写真 · 东方意境", description: "从衣袖到视线，把喜欢的东方意境，变成适合你的画面。", style: "汉服写真", bookable: true },
-  { index: 18, title: "自在", english: "A MOMENT OF YOUR OWN", category: "自然写真 · 日常穿搭", description: "不一定要盛装。蓝天、草木和简单的衣服，也可以留下你的样子。", style: "自然写真", bookable: true },
+  { index: 32, indexes: [32, 33, 34, 35], title: "童游记", english: "LITTLE WANDERER", category: "儿童汉服 · 游园", description: "把童真，留在游园的片刻。", style: "儿童汉服", bookable: true },
+  { index: 25, indexes: [25, 26, 19, 27, 28], title: "朱衣入画", english: "VERMILION STORY", category: "汉服写真 · 红衣光影", description: "衣袖舒展，光影停留。", style: "汉服写真", bookable: true },
+  { index: 36, indexes: [36, 29, 30, 31], title: "庭院寻春", english: "GARDEN REVERIE", category: "汉服写真 · 园林", description: "走过回廊，在绿意间停一停。", style: "汉服写真", bookable: true },
+  { index: 8, indexes: [8, 3, 2, 7, 37], title: "一卷清梦", english: "A QUIET CHAPTER", category: "汉服写真 · 书卷", description: "书页、纸伞与一段安静的时光。", style: "汉服写真", bookable: true },
 
 ];
 const caseIndexes = [0, 1, 12, 14];
 const allIndexes = photographs.map((_, index) => index);
-const selected = [...directions.map((direction) => direction.index), ...caseIndexes];
+const selected = [...directions.flatMap((direction) => direction.indexes), ...caseIndexes];
 const streetIndexes = [20, 23, 22, 24, 21];
 const collections = [
-  { id: "hanfu", title: "汉服写真", note: "古建、园林与人物光影", indexes: [25, 26, 27, 28, 30, 31, 29, 19, 14, 13, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
+  { id: "hanfu", title: "汉服写真", note: "古建、园林与人物光影", indexes: [25, 26, 27, 28, 30, 31, 29, 19, 14, 13, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 32, 33, 34, 35, 36, 37] },
   { id: "natural", title: "自然写真", note: "蓝天、草木与日常穿搭", indexes: [18, 17, 15, 16] },
   { id: "street", title: "街头观察", note: "个人观察记录，非预约客片", indexes: streetIndexes },
 ];
-const inquiryStyles = ["汉服写真", "自然写真", "还没想好，想聊聊"];
+const inquiryStyles = ["汉服写真", "自然写真", "儿童汉服", "还没想好，想聊聊"];
 const preparations = [
   { title: "先了解你，而不是先套风格。", text: "聊聊你喜欢的照片、想留下的感觉，以及不喜欢的角度和动作，再确定准备的方向。" },
   { title: "研究地点，也想好怎么构图。", text: "在网上查找场景、构图和动作参考，再结合你的喜好与实际条件，整理拍摄方向。" },
@@ -140,14 +148,14 @@ export default function Home() {
 
       <section className="works section" id="works">
         <div className="section-label"><span>01 / SELECTED STORIES</span><span>摄影作品选集</span></div>
-        <div className="works-heading"><h2>哪一种画面，<br /><span>让你想成为主角？</span></h2><p>从一张喜欢的照片开始。<br />选一个方向，我们再聊怎么拍得适合你。</p></div>
+        <div className="works-heading"><h2>四段时光，<br /><span>慢慢翻看。</span></h2><p>一组照片，一个故事。<br />点开封面，看完整系列。</p></div>
         <div className="editorial-grid">
           {directions.map((direction, order) => <article className={`story story-${order + 1}`} key={direction.index}>
-            <button type="button" className="story-photo" onClick={() => openPhoto(direction.index, collections.find((collection) => collection.id === (direction.style === "汉服写真" ? "hanfu" : "natural"))!.indexes, direction.style)} aria-label={`放大查看：${photographs[direction.index].alt}`}>
+            <button type="button" className="story-photo" onClick={() => openPhoto(direction.index, direction.indexes, direction.title)} aria-label={`浏览系列：${direction.title}`}>
               <img src={photographs[direction.index].src} alt={photographs[direction.index].alt} loading="lazy" />
-              <span className="photo-open" aria-hidden="true">查看原幅 ↗</span>
+              <span className="photo-open" aria-hidden="true">查看系列 · {direction.indexes.length} 张 ↗</span>
             </button>
-            <div className="story-info"><div className="story-title"><span className="story-number">0{order + 1}</span><h3>{direction.title}</h3><span className="story-english">{direction.english}</span></div><div className="story-description"><p className="story-category">{direction.category}</p><p>{direction.description}</p>{direction.bookable ? <a className="underlined-link" href="#contact" onClick={() => chooseStyle(direction.style)}>我想拍这种风格 <span aria-hidden="true">↗</span></a> : <a className="underlined-link" href="#archive-street" onClick={() => { const gallery = document.getElementById("archive-street") as HTMLDetailsElement | null; if (gallery) gallery.open = true; }}>看更多街头观察 <span aria-hidden="true">↗</span></a>}</div></div>
+            <div className="story-info"><div className="story-title"><span className="story-number">0{order + 1}</span><h3>{direction.title}</h3><span className="story-english">{direction.english}</span></div><div className="story-description"><p className="story-category">{direction.category}</p><p>{direction.description}</p>{direction.bookable ? <a className="underlined-link" href="#contact" onClick={() => chooseStyle(direction.style, direction.title)}>我想拍这一系列 <span aria-hidden="true">↗</span></a> : <a className="underlined-link" href="#archive-street" onClick={() => { const gallery = document.getElementById("archive-street") as HTMLDetailsElement | null; if (gallery) gallery.open = true; }}>看更多街头观察 <span aria-hidden="true">↗</span></a>}</div></div>
           </article>)}
         </div>
       </section>
@@ -165,7 +173,7 @@ export default function Home() {
           const remaining = collection.indexes.filter((index) => !selected.includes(index));
           return <details className="archive collection-archive" id={`archive-${collection.id}`} key={collection.id}>
             <summary><span>{collection.title}<small> / 展开其余 {remaining.length} 张 · {collection.note}</small></span><span className="plus" aria-hidden="true">＋</span></summary>
-            <div className="archive-grid">{remaining.map((index) => <button className="archive-photo" key={photographs[index].src} onClick={() => openPhoto(index, collection.indexes, collection.title)} type="button" aria-label={`放大查看：${photographs[index].alt}`}><img src={photographs[index].src} alt={photographs[index].alt} loading="lazy" /><span>{String(index + 1).padStart(2, "0")} / {photographs[index].alt}</span></button>)}</div>
+            <div className="archive-grid">{remaining.map((index) => <button className="archive-photo" key={photographs[index].src} onClick={() => openPhoto(index, remaining, collection.title)} type="button" aria-label={`放大查看：${photographs[index].alt}`}><img src={photographs[index].src} alt={photographs[index].alt} loading="lazy" /><span>{String(index + 1).padStart(2, "0")} / {photographs[index].alt}</span></button>)}</div>
           </details>;
         })}
       </section>
@@ -211,7 +219,7 @@ export default function Home() {
       <div className="mobile-contact"><a href="#case">看整组案例</a><a href="#contact">聊聊我的拍摄 ↗</a></div>
 
       <dialog ref={dialogRef} className="lightbox" aria-label={`${galleryTitle}大图预览`} onCancel={closePhoto} onClose={() => setActiveIndex(null)} onClick={(event) => { if (event.target === event.currentTarget) closePhoto(); }} onKeyDown={(event) => { if (event.key === "ArrowRight") { event.preventDefault(); movePhoto(1); } if (event.key === "ArrowLeft") { event.preventDefault(); movePhoto(-1); } }}>
-        {activeIndex !== null && <><p className="lightbox-title">{galleryTitle}</p><button className="lightbox-close" type="button" onClick={closePhoto} autoFocus>关闭 ×</button><figure><img src={photographs[activeIndex].src} alt={photographs[activeIndex].alt} /><figcaption><span>{String(activeSequence.indexOf(activeIndex) + 1).padStart(2, "0")} / {activeSequence.length} · 作品 {String(activeIndex + 1).padStart(2, "0")}</span><span>{photographs[activeIndex].alt}{streetIndexes.includes(activeIndex) ? " · 街头观察 / 非预约客片" : ""}</span></figcaption></figure><div className="lightbox-controls"><button type="button" onClick={() => movePhoto(-1)} aria-label="上一张">← 上一张</button>{!streetIndexes.includes(activeIndex) && <a href="#contact" onClick={() => { chooseStyle(collections.find((c) => c.id === "natural")!.indexes.includes(activeIndex) ? "自然写真" : "汉服写真", galleryTitle === "古建与落日" ? "古建与落日 · 01 / 02 / 13 / 15" : `作品 ${String(activeIndex + 1).padStart(2, "0")}`); closePhoto(); }}>我想拍这种感觉 ↗</a>}<button type="button" onClick={() => movePhoto(1)} aria-label="下一张">下一张 →</button></div></>}
+        {activeIndex !== null && <><p className="lightbox-title">{galleryTitle}</p><button className="lightbox-close" type="button" onClick={closePhoto} autoFocus>关闭 ×</button><figure><img src={photographs[activeIndex].src} alt={photographs[activeIndex].alt} /><figcaption><span>{String(activeSequence.indexOf(activeIndex) + 1).padStart(2, "0")} / {activeSequence.length} · 作品 {String(activeIndex + 1).padStart(2, "0")}</span><span>{photographs[activeIndex].alt}{streetIndexes.includes(activeIndex) ? " · 街头观察 / 非预约客片" : ""}</span></figcaption></figure><div className="lightbox-controls"><button type="button" onClick={() => movePhoto(-1)} aria-label="上一张">← 上一张</button>{!streetIndexes.includes(activeIndex) && <a href="#contact" onClick={() => { chooseStyle(directions.find((series) => series.title === galleryTitle)?.style || (collections.find((c) => c.id === "natural")!.indexes.includes(activeIndex) ? "自然写真" : "汉服写真"), directions.some((series) => series.title === galleryTitle) ? galleryTitle : galleryTitle === "古建与落日" ? "古建与落日 · 01 / 02 / 13 / 15" : `作品 ${String(activeIndex + 1).padStart(2, "0")}`); closePhoto(); }}>我想拍这种感觉 ↗</a>}<button type="button" onClick={() => movePhoto(1)} aria-label="下一张">下一张 →</button></div></>}
       </dialog>
     </main>
   );
