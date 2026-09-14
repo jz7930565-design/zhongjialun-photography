@@ -28,10 +28,17 @@ const photographs = [
   { src: "./work/collection-23.webp", alt: "金色落日下坐在江边的人物剪影" },
   { src: "./work/collection-24.webp", alt: "花树下坐着的两个人与吉他" },
   { src: "./work/collection-25.webp", alt: "堤岸上骑车与步行的人物瞬间" },
+  { src: "./work/collection-26.webp", alt: "古城墙前转身扬袖的红衣汉服人像" },
+  { src: "./work/collection-27.webp", alt: "墙面光影中抬手回望的红衣汉服人像" },
+  { src: "./work/collection-28.webp", alt: "廊边静坐的红衣汉服侧影" },
+  { src: "./work/collection-29.webp", alt: "山石瀑布前撑红伞的汉服人像" },
+  { src: "./work/collection-30.webp", alt: "园林木桥上远望的粉衣汉服人像" },
+  { src: "./work/collection-31.webp", alt: "窗边手持书册的粉衣汉服人像" },
+  { src: "./work/collection-32.webp", alt: "荷塘边手持团扇的粉衣汉服侧影" },
 ];
 
 const directions = [
-  { index: 19, title: "入画", english: "INTO THE SCENE", category: "汉服写真 · 东方意境", description: "从衣袖到视线，把喜欢的东方意境，变成适合你的画面。", style: "汉服写真", bookable: true },
+  { index: 25, title: "入画", english: "INTO THE SCENE", category: "汉服写真 · 东方意境", description: "从衣袖到视线，把喜欢的东方意境，变成适合你的画面。", style: "汉服写真", bookable: true },
   { index: 18, title: "自在", english: "A MOMENT OF YOUR OWN", category: "自然写真 · 日常穿搭", description: "不一定要盛装。蓝天、草木和简单的衣服，也可以留下你的样子。", style: "自然写真", bookable: true },
 
 ];
@@ -40,7 +47,7 @@ const allIndexes = photographs.map((_, index) => index);
 const selected = [...directions.map((direction) => direction.index), ...caseIndexes];
 const streetIndexes = [20, 23, 22, 24, 21];
 const collections = [
-  { id: "hanfu", title: "汉服写真", note: "古建、竹林与人物光影", indexes: [19, 14, 13, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
+  { id: "hanfu", title: "汉服写真", note: "古建、园林与人物光影", indexes: [25, 26, 27, 28, 30, 31, 29, 19, 14, 13, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
   { id: "natural", title: "自然写真", note: "蓝天、草木与日常穿搭", indexes: [18, 17, 15, 16] },
   { id: "street", title: "街头观察", note: "个人观察记录，非预约客片", indexes: streetIndexes },
 ];

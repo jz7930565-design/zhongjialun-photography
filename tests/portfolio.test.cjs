@@ -57,14 +57,14 @@ function find(tree, predicate) {
   return result;
 }
 
-test('all 25 works remain accessible; the confirmed case is exactly 01, 02, 13, 15', () => {
+test('all 32 works remain accessible; the confirmed case is exactly 01, 02, 13, 15', () => {
   assert.deepEqual(data.caseIndexes, [0, 1, 12, 14]);
-  assert.equal(data.photographs.length, 25);
+  assert.equal(data.photographs.length, 32);
   const grouped = data.collections.flatMap((group) => group.indexes);
-  assert.equal(grouped.length, 25);
-  assert.equal(new Set(grouped).size, 25);
+  assert.equal(grouped.length, 32);
+  assert.equal(new Set(grouped).size, 32);
   const additional = grouped.filter((index) => !data.selected.includes(index));
-  assert.equal(additional.length, 19);
+  assert.equal(additional.length, 26);
   for (const photo of data.photographs) assert.ok(fs.existsSync(path.join(project, 'public', photo.src)));
 });
 
