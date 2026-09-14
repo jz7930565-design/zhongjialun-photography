@@ -45,7 +45,7 @@ const photographs = [
 
 const directions = [
   { index: 32, indexes: [32, 33, 34, 35], title: "童游记", english: "LITTLE WANDERER", category: "儿童汉服 · 游园", description: "把童真，留在游园的片刻。", style: "儿童汉服", bookable: true },
-  { index: 25, indexes: [25, 26, 19, 27, 28], title: "朱衣入画", english: "VERMILION STORY", category: "汉服写真 · 红衣光影", description: "衣袖舒展，光影停留。", style: "汉服写真", bookable: true },
+  { index: 26, indexes: [26, 25, 19, 27, 28], title: "朱衣入画", english: "VERMILION STORY", category: "汉服写真 · 红衣光影", description: "衣袖舒展，光影停留。", style: "汉服写真", bookable: true },
   { index: 36, indexes: [36, 29, 30, 31], title: "庭院寻春", english: "GARDEN REVERIE", category: "汉服写真 · 园林", description: "走过回廊，在绿意间停一停。", style: "汉服写真", bookable: true },
   { index: 8, indexes: [8, 3, 2, 7, 37], title: "一卷清梦", english: "A QUIET CHAPTER", category: "汉服写真 · 书卷", description: "书页、纸伞与一段安静的时光。", style: "汉服写真", bookable: true },
 
@@ -191,7 +191,7 @@ export default function Home() {
       </section>
 
       <section className="experience" id="experience">
-        <div className="experience-photo"><img src={photographs[8].src} alt={photographs[8].alt} loading="lazy" /><span>小憩 / 人物摄影作品</span></div>
+        <div className="experience-photo"><img src={photographs[37].src} alt={photographs[37].alt} loading="lazy" /><span>伞下清风 / 人物摄影作品</span></div>
         <div className="experience-copy"><p className="section-label">03 / BEFORE THE CAMERA</p><h2>在你来到<br />镜头前，<br /><em>准备先开始。</em></h2><p className="experience-lead">我是钟家伦。先了解你的喜好，再研究地点、构图和动作，想好怎么引导你。你不需要独自琢磨“到了现场该怎么拍”。</p>
           <div className="care-list">{preparations.map((item, index) => <div key={item.title}><span>0{index + 1}</span><div><h3>{item.title}</h3><p>{item.text}</p></div></div>)}</div>
           <a className="underlined-link" href="#contact">一起找适合我的拍摄方向 <span aria-hidden="true">↗</span></a>

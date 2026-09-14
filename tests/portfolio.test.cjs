@@ -81,6 +81,16 @@ test('QQ number copying reports success and failure honestly', async () => {
   }
 });
 
+test('requested cover and experience replacements use the selected existing photographs', () => {
+  const page = createPage();
+  const tree = page.render();
+  const cover = find(tree, n => n.props?.['aria-label'] === '浏览系列：朱衣入画');
+  assert.equal(find(cover, n => n.type === 'img').props.src, './work/collection-27.webp');
+  const experience = find(tree, n => n.props?.className === 'experience-photo');
+  assert.equal(find(experience, n => n.type === 'img').props.src, './work/dream-umbrella.webp');
+  assert.match(text(experience), /伞下清风/);
+});
+
 test('all 38 works remain accessible; the confirmed case is exactly 01, 02, 13, 15', () => {
   assert.deepEqual(data.caseIndexes, [0, 1, 12, 14]);
   assert.equal(data.photographs.length, 38);
