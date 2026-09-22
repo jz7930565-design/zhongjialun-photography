@@ -91,6 +91,30 @@ test('requested cover and experience replacements use the selected existing phot
   assert.match(text(experience), /伞下清风/);
 });
 
+test('contact sheets open the exact frame without leaving its series', () => {
+  for (const series of data.directions) {
+    const page = createPage();
+    for (let position = 0; position < series.indexes.length; position++) {
+      find(page.render(), n => n.props?.['aria-label'] === `预览${series.title}第${position + 1}张`).props.onClick();
+      const dialog = find(page.render(), n => n.type === 'dialog');
+      assert.equal(find(dialog, n => n.type === 'img').props.src, data.photographs[series.indexes[position]].src);
+      assert.match(text(dialog), new RegExp(series.title));
+    }
+  }
+});
+
+test('all six service steps remain available in native disclosures', () => {
+  const journey = find(createPage().render(), n => n.props?.className === 'service-steps');
+  const disclosures = elements(journey).filter(n => n.type === 'details');
+  assert.equal(disclosures.length, 6);
+  assert.equal(disclosures[0].props.open, true);
+  for (const disclosure of disclosures) {
+    assert.ok(find(disclosure, n => n.type === 'summary'));
+    assert.match(text(disclosure), /你可以准备/);
+    assert.match(text(disclosure), /一起确认/);
+  }
+});
+
 test('all 38 works remain accessible; the confirmed case is exactly 01, 02, 13, 15', () => {
   assert.deepEqual(data.caseIndexes, [0, 1, 12, 14]);
   assert.equal(data.photographs.length, 38);

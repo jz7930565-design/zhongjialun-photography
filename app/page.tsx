@@ -148,25 +148,25 @@ export default function Home() {
       <a className="skip-link" href="#works">跳到摄影作品</a>
       <header className="site-header">
         <a className="brand" href="#top" aria-label="钟家伦摄影，回到顶部"><strong>钟家伦<span className="brand-dot">.</span></strong><span>JIALUN / PHOTOGRAPHY</span></a>
-        <nav aria-label="主导航"><a href="#works">摄影作品</a><a href="#case">成组案例</a><a href="#process">拍摄流程</a><a className="nav-contact" href="#contact">聊聊拍摄 <span aria-hidden="true">↗</span></a></nav>
+        <nav aria-label="主导航"><a href="#works">翻看作品</a><a href="#experience">拍摄之前</a><a href="#process">拍摄流程</a><a className="nav-contact" href="#contact">聊聊拍摄 <span aria-hidden="true">↗</span></a></nav>
       </header>
 
-      <section className="cover" id="top">
-        <img className="cover-photo" src={photographs[0].src} alt={photographs[0].alt} fetchPriority="high" />
-        <div className="cover-top"><span>汉服写真 · 自然写真</span><button type="button" onClick={() => openPhoto(0, caseIndexes, "古建与落日")}>查看原幅 ↗</button></div>
-        <div className="cover-bottom"><div><p className="cover-kicker">A PORTRAIT. A STORY.</p><h1>让此刻，<br /><span>成为故事。</span></h1><p className="cover-description">不用提前学会摆姿势，从简单的动作开始。</p></div><a className="cover-inquiry" href="#contact"><span>聊聊我的拍摄</span><span aria-hidden="true">↗</span></a></div>
-        <div className="cover-foot"><a href="#case">本期作品 / 古建与落日 ↗</a><a href="#works">寻找你的拍摄方向 ↓</a></div>
+      <section className="portrait-cover" id="top" aria-labelledby="cover-title">
+        <div className="cover-copy"><p className="eyebrow">钟家伦的摄影手记 / PORTRAIT JOURNAL</p><h1 id="cover-title">你不用擅长<br />面对<em>镜头。</em></h1><p className="cover-note">把准备交给我，<br />把这一刻，留给自己。</p><p className="cover-intro">从喜欢的画面聊起，一起找地点、想动作。<br />你可以慢慢进入状态，我会一步步引导。</p><a className="island-button" href="#works">翻开我的作品集 <span aria-hidden="true">↗</span></a><a className="cover-text-link" href="#experience">第一次拍写真？从这里了解</a><div className="cover-signature"><span>Jialun</span><p>人物写真 · 汉服 · 日常记录</p></div></div>
+        <div className="cover-art"><span className="vertical-note" aria-hidden="true">不必成为别人，留下你自己。</span><button className="hero-frame" type="button" onClick={() => openPhoto(26, directions[1].indexes, "朱衣入画")} aria-label="浏览首页作品：朱衣入画"><img src={photographs[26].src} alt={photographs[26].alt} fetchPriority="high" /><span className="hero-photo-tag">朱衣入画 <span>打开这一组 ↗</span></span></button><div className="hero-caption"><span>01 / 日光朱红</span><span>光落在衣袖，也落在此刻。</span></div></div>
+        <div className="journal-footer"><span>摄影不只发生在按下快门的那一秒。</span><a href="#works">向下翻阅 ↓</a></div>
       </section>
 
       <section className="works section" id="works">
         <div className="section-label"><span>01 / SELECTED STORIES</span><span>摄影作品选集</span></div>
-        <div className="works-heading"><h2>四段时光，<br /><span>慢慢翻看。</span></h2><p>一组照片，一个故事。<br />点开封面，看完整系列。</p></div>
+        <div className="works-heading"><h2>喜欢的画面，<br /><span>是我们聊天的起点。</span></h2><p>不用马上决定风格。<br />先翻一翻，找到让你停下来的那一张。</p></div>
         <div className="editorial-grid">
-          {directions.map((direction, order) => <article className={`story story-${order + 1}`} key={direction.index}>
+          {[directions[1], directions[2], directions[3], directions[0]].map((direction, order) => <article className={`story story-${order + 1}`} key={direction.index}>
             <button type="button" className="story-photo" onClick={() => openPhoto(direction.index, direction.indexes, direction.title)} aria-label={`浏览系列：${direction.title}`}>
               <img src={photographs[direction.index].src} alt={photographs[direction.index].alt} loading="lazy" />
               <span className="photo-open" aria-hidden="true">查看系列 · {direction.indexes.length} 张 ↗</span>
             </button>
+            <div className="series-contact-sheet" aria-label={`${direction.title}的照片预览`}>{direction.indexes.map((index, position) => <button type="button" key={index} aria-label={`预览${direction.title}第${position + 1}张`} onClick={() => openPhoto(index, direction.indexes, direction.title)}><img src={photographs[index].src} alt={photographs[index].alt} loading="lazy" /><span>{String(position + 1).padStart(2, "0")}</span></button>)}</div>
             <div className="story-info"><div className="story-title"><span className="story-number">0{order + 1}</span><h3>{direction.title}</h3><span className="story-english">{direction.english}</span></div><div className="story-description"><p className="story-category">{direction.category}</p><p>{direction.description}</p>{direction.bookable ? <a className="underlined-link" href="#contact" onClick={() => chooseStyle(direction.style, direction.title)}>我想拍这一系列 <span aria-hidden="true">↗</span></a> : <a className="underlined-link" href="#archive-street" onClick={() => { const gallery = document.getElementById("archive-street") as HTMLDetailsElement | null; if (gallery) gallery.open = true; }}>看更多街头观察 <span aria-hidden="true">↗</span></a>}</div></div>
           </article>)}
         </div>
@@ -201,7 +201,7 @@ export default function Home() {
       <section className="journey section" id="process">
         <div className="section-label"><span>04 / FROM HELLO TO PHOTOS</span><span>从咨询到交付</span></div>
         <div className="journey-heading"><h2>拍摄有期待，<br />每一步也清楚。</h2><p>先了解彼此，再确定方案。<br />六个步骤，按需展开查看准备与确认事项。</p></div>
-        <ol className="service-steps">{process.map((step, index) => <li key={step.phase}><div className="step-top"><span>0{index + 1}</span><span>{step.phase}</span></div><h3>{step.title}</h3><p>{step.text}</p><details><summary>准备与确认 <span className="plus" aria-hidden="true">＋</span></summary><dl><div><dt>你可以准备</dt><dd>{step.you}</dd></div><div><dt>一起确认</dt><dd>{step.confirm}</dd></div></dl></details></li>)}</ol>
+        <ol className="service-steps">{process.map((step, index) => <li key={step.phase}><details open={index === 0 ? true : undefined}><summary><span className="step-number">0{index + 1}</span><span><small>{step.phase}</small><strong>{step.title}</strong></span><span className="plus" aria-hidden="true">＋</span></summary><div className="step-content"><p>{step.text}</p><dl><div><dt>你可以准备</dt><dd>{step.you}</dd></div><div><dt>一起确认</dt><dd>{step.confirm}</dd></div></dl></div></details></li>)}</ol>
         <div className="journey-bottom"><p>费用、时长、精修张数和交付日期，在预约前逐项确认。</p><a className="underlined-link" href="#contact">先聊聊我的拍摄 ↗</a></div>
       </section>
 

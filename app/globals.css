@@ -1,11 +1,11 @@
 :root {
-  --paper: #ffffff;
-  --ink: #181818;
-  --muted: #656565;
-  --line: #d8d8d8;
-  --accent: #c93628;
+  --paper: #f8f5ef;
+  --ink: #292722;
+  --muted: #6d6961;
+  --line: #29272224;
+  --accent: #9f3428;
   --serif: "Songti SC", "STSong", "SimSun", "Noto Serif SC", serif;
-  --sans: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --sans: "Aptos", "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 24px; }

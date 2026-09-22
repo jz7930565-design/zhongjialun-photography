@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./editorial.css";
 
 export const metadata: Metadata = {
   title: "钟家伦摄影｜人物写真与汉服摄影",
