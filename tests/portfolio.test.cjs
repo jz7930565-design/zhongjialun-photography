@@ -115,20 +115,20 @@ test('all six service steps remain available in native disclosures', () => {
   }
 });
 
-test('all 38 works remain accessible; the confirmed case is exactly 01, 02, 13, 15', () => {
+test('all 40 works remain accessible; the confirmed case is exactly 01, 02, 13, 15', () => {
   assert.deepEqual(data.caseIndexes, [0, 1, 12, 14]);
-  assert.equal(data.photographs.length, 38);
+  assert.equal(data.photographs.length, 40);
   const grouped = data.collections.flatMap((group) => group.indexes);
-  assert.equal(grouped.length, 38);
-  assert.equal(new Set(grouped).size, 38);
+  assert.equal(grouped.length, 40);
+  assert.equal(new Set(grouped).size, 40);
   const additional = grouped.filter((index) => !data.selected.includes(index));
-  assert.equal(additional.length, 16);
+  assert.equal(additional.length, 15);
   for (const photo of data.photographs) assert.ok(fs.existsSync(path.join(project, 'public', photo.src)));
 });
 
 test('four series have complete unique sequences and carry their title into inquiries', () => {
-  assert.deepEqual(data.directions.map(s => s.indexes.length), [4, 5, 4, 5]);
-  assert.equal(new Set(data.directions.flatMap(s => s.indexes)).size, 18);
+  assert.deepEqual(data.directions.map(s => s.indexes.length), [4, 5, 7, 5]);
+  assert.equal(new Set(data.directions.flatMap(s => s.indexes)).size, 21);
   for (const series of data.directions) {
     const page = createPage();
     let tree = page.render();

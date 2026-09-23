@@ -9,14 +9,14 @@ const photographs = [
   { src: "./work/dream-courtyard.webp", alt: "建筑中轴线上的持伞少女" },
   { src: "./work/portrait-05.webp", alt: "红灯笼前的粉色汉服少女" },
   { src: "./work/portrait-06.webp", alt: "山石旁读书的红衣少年" },
-  { src: "./work/portrait-07.webp", alt: "古建筑栏杆旁的粉衣少女" },
+  { src: "./work/pink-sleeves-retouched.webp", alt: "古建筑栏杆旁抬袖的粉衣少女" },
   { src: "./work/dream-reading.webp", alt: "草地边共读画卷的少年少女" },
   { src: "./work/dream-rest.webp", alt: "书案前小憩的蓝衣少女" },
   { src: "./work/portrait-10.webp", alt: "竹林中撑伞的蓝衣少女" },
   { src: "./work/portrait-11.webp", alt: "红色书法布景中的汉服人像" },
   { src: "./work/portrait-12.webp", alt: "书案前阅读的蓝衣少年" },
   { src: "./work/portrait-13.webp", alt: "宫殿前的侠客人物肖像" },
-  { src: "./work/portrait-14.webp", alt: "古建筑前撑伞的粉衣少女" },
+  { src: "./work/garden-umbrella-retouched.webp", alt: "古建筑前撑伞的粉衣少女" },
   { src: "./work/collection-15.webp", alt: "夕阳中相对而立的双人汉服剪影" },
   { src: "./work/collection-16.webp", alt: "蓝天下抬手遮光的白衣人像" },
   { src: "./work/collection-17.webp", alt: "草丛中仰望飞机的白衣背影" },
@@ -32,21 +32,23 @@ const photographs = [
   { src: "./work/collection-27.webp", alt: "墙面光影中抬手回望的红衣汉服人像" },
   { src: "./work/collection-28.webp", alt: "廊边静坐的红衣汉服侧影" },
   { src: "./work/collection-29.webp", alt: "山石瀑布前撑红伞的汉服人像" },
-  { src: "./work/collection-30.webp", alt: "园林木桥上远望的粉衣汉服人像" },
+  { src: "./work/pink-bridge-retouched.webp", alt: "园林木桥上远望的粉衣汉服人像" },
   { src: "./work/collection-31.webp", alt: "窗边手持书册的粉衣汉服人像" },
   { src: "./work/collection-32.webp", alt: "荷塘边手持团扇的粉衣汉服侧影" },
   { src: "./work/child-1.webp", alt: "宫门前抱着藤球的红衣小朋友" },
   { src: "./work/child-2.webp", alt: "园林中扶帽持扇的小朋友" },
   { src: "./work/child-3.webp", alt: "草木间回头微笑的小朋友" },
   { src: "./work/child-4.webp", alt: "石狮旁抬手玩耍的小朋友" },
-  { src: "./work/garden-umbrella.webp", alt: "青瓦回廊前举起纸伞的粉衣少女" },
+  { src: "./work/garden-umbrella-retouched.webp", alt: "青瓦回廊前举起纸伞的粉衣少女" },
   { src: "./work/dream-umbrella.webp", alt: "山石草木间撑纸伞的蓝衣少女" },
+  { src: "./work/pink-veil-portrait.webp", alt: "青瓦屋檐前以粉色衣袖半遮面的汉服少女" },
+  { src: "./work/pink-sky-profile.webp", alt: "蓝天与古建前侧身远望的粉衣少女" },
 ];
 
 const directions = [
   { index: 32, indexes: [32, 33, 34, 35], title: "童游记", english: "LITTLE WANDERER", category: "儿童汉服 · 游园", description: "把童真，留在游园的片刻。", style: "儿童汉服", bookable: true },
   { index: 26, indexes: [26, 25, 19, 27, 28], title: "朱衣入画", english: "VERMILION STORY", category: "汉服写真 · 红衣光影", description: "衣袖舒展，光影停留。", style: "汉服写真", bookable: true },
-  { index: 36, indexes: [36, 29, 30, 31], title: "庭院寻春", english: "GARDEN REVERIE", category: "汉服写真 · 园林", description: "走过回廊，在绿意间停一停。", style: "汉服写真", bookable: true },
+  { index: 36, indexes: [36, 38, 6, 29, 39, 30, 31], title: "庭院寻春", english: "GARDEN REVERIE", category: "汉服写真 · 园林", description: "走过回廊，在绿意间停一停。", style: "汉服写真", bookable: true },
   { index: 8, indexes: [8, 3, 2, 7, 37], title: "一卷清梦", english: "A QUIET CHAPTER", category: "汉服写真 · 书卷", description: "书页、纸伞与一段安静的时光。", style: "汉服写真", bookable: true },
 
 ];
@@ -55,7 +57,7 @@ const allIndexes = photographs.map((_, index) => index);
 const selected = [...directions.flatMap((direction) => direction.indexes), ...caseIndexes];
 const streetIndexes = [20, 23, 22, 24, 21];
 const collections = [
-  { id: "hanfu", title: "汉服写真", note: "古建、园林与人物光影", indexes: [25, 26, 27, 28, 30, 31, 29, 19, 14, 13, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 32, 33, 34, 35, 36, 37] },
+  { id: "hanfu", title: "汉服写真", note: "古建、园林与人物光影", indexes: [25, 26, 27, 28, 30, 31, 29, 19, 14, 13, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 32, 33, 34, 35, 36, 37, 38, 39] },
   { id: "natural", title: "自然写真", note: "蓝天、草木与日常穿搭", indexes: [18, 17, 15, 16] },
   { id: "street", title: "街头观察", note: "个人观察记录，非预约客片", indexes: streetIndexes },
 ];
