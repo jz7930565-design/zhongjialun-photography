@@ -92,6 +92,7 @@ export default function Home() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [chosenStyle, setChosenStyle] = useState("");
   const [reference, setReference] = useState("");
+  const [savedSeries, setSavedSeries] = useState<string[]>([]);
   const [activeSequence, setActiveSequence] = useState<number[]>(allIndexes);
   const [galleryTitle, setGalleryTitle] = useState("摄影作品");
   const [inquiry, setInquiry] = useState({ date: "", city: "", people: "", budget: "", notes: "" });
@@ -99,7 +100,8 @@ export default function Home() {
   const [qqStatus, setQqStatus] = useState("");
   const dialogRef = useRef<HTMLDialogElement>(null);
   const returnFocus = useRef<HTMLElement | null>(null);
-  const inquiryMessage = `你好，我想咨询${chosenStyle && chosenStyle !== "还没想好，想聊聊" ? "「" + chosenStyle + "」" : ""}拍摄。${reference ? "\n参考作品：" + reference : ""}\n意向日期：${inquiry.date || "待商量"}\n城市 / 人数：${inquiry.city || "待商量"} / ${inquiry.people || "待确认"}\n预算范围：${inquiry.budget || "想先了解报价"}\n拍摄想法与顾虑：${inquiry.notes || "想一起聊聊适合我的方向"}\n希望了解方案、费用和可约时间。`;
+  const inquiryReferences = [...new Set([reference, ...savedSeries].filter(Boolean))].join("、");
+  const inquiryMessage = `你好，我想咨询${chosenStyle && chosenStyle !== "还没想好，想聊聊" ? "「" + chosenStyle + "」" : ""}拍摄。${inquiryReferences ? "\n参考作品：" + inquiryReferences : ""}\n意向日期：${inquiry.date || "待商量"}\n城市 / 人数：${inquiry.city || "待商量"} / ${inquiry.people || "待确认"}\n预算范围：${inquiry.budget || "想先了解报价"}\n拍摄想法与顾虑：${inquiry.notes || "想一起聊聊适合我的方向"}\n希望了解方案、费用和可约时间。`;
   const updateInquiry = (field: keyof typeof inquiry, value: string) => {
     setInquiry((current) => ({ ...current, [field]: value }));
     setCopyStatus("");
@@ -121,6 +123,10 @@ export default function Home() {
     return activeSequence[(position + direction + activeSequence.length) % activeSequence.length];
   });
   const chooseStyle = (style: string, work = "") => { setChosenStyle(style); setReference(work); setCopyStatus(""); };
+  const toggleSeries = (title: string) => {
+    setSavedSeries((current) => current.includes(title) ? current.filter((item) => item !== title) : [...current, title]);
+    setCopyStatus("");
+  };
   useEffect(() => {
     if (activeIndex === null) return;
     if (!dialogRef.current?.open) dialogRef.current?.showModal();
@@ -155,23 +161,25 @@ export default function Home() {
 
       <section className="portrait-cover" id="top" aria-labelledby="cover-title">
         <div className="cover-copy"><p className="eyebrow">钟家伦的摄影手记 / PORTRAIT JOURNAL</p><h1 id="cover-title">你不用擅长<br />面对<em>镜头。</em></h1><p className="cover-note">把准备交给我，<br />把这一刻，留给自己。</p><p className="cover-intro">从喜欢的画面聊起，一起找地点、想动作。<br />你可以慢慢进入状态，我会一步步引导。</p><a className="island-button" href="#works">翻开我的作品集 <span aria-hidden="true">↗</span></a><a className="cover-text-link" href="#experience">第一次拍写真？从这里了解</a><div className="cover-signature"><span>Jialun</span><p>人物写真 · 汉服 · 日常记录</p></div></div>
-        <div className="cover-art"><span className="vertical-note" aria-hidden="true">不必成为别人，留下你自己。</span><button className="hero-frame" type="button" onClick={() => openPhoto(26, directions[1].indexes, "朱衣入画")} aria-label="浏览首页作品：朱衣入画"><img src={photographs[26].src} alt={photographs[26].alt} fetchPriority="high" /><span className="hero-photo-tag">朱衣入画 <span>打开这一组 ↗</span></span></button><div className="hero-caption"><span>01 / 日光朱红</span><span>光落在衣袖，也落在此刻。</span></div></div>
+        <div className="cover-art"><span className="vertical-note" aria-hidden="true">不必成为别人，留下你自己。</span><button className="hero-frame" type="button" onClick={() => openPhoto(38, directions[2].indexes, "庭院寻春")} aria-label="浏览首页作品：庭院寻春"><img src={photographs[38].src} alt={photographs[38].alt} fetchPriority="high" /><span className="hero-photo-tag">庭院寻春 <span>打开这一组 ↗</span></span></button><div className="hero-caption"><span>01 / 春日影像</span><span>从喜欢的画面开始，慢慢成为自己的主角。</span></div></div>
         <div className="journal-footer"><span>摄影不只发生在按下快门的那一秒。</span><a href="#works">向下翻阅 ↓</a></div>
       </section>
 
       <section className="works section" id="works">
         <div className="section-label"><span>01 / SELECTED STORIES</span><span>摄影作品选集</span></div>
         <div className="works-heading"><h2>喜欢的画面，<br /><span>是我们聊天的起点。</span></h2><p>不用马上决定风格。<br />先翻一翻，找到让你停下来的那一张。</p></div>
+        <nav className="chapter-nav" aria-label="跳转到作品系列">{[directions[2], directions[1], directions[3], directions[0]].map((direction, index) => <a href={`#story-${index + 1}`} key={direction.title}><span>0{index + 1}</span>{direction.title}<span aria-hidden="true">↗</span></a>)}</nav>
         <div className="editorial-grid">
-          {[directions[1], directions[2], directions[3], directions[0]].map((direction, order) => <article className={`story story-${order + 1}`} key={direction.index}>
+          {[directions[2], directions[1], directions[3], directions[0]].map((direction, order) => <article className={`story story-${order + 1}`} id={`story-${order + 1}`} key={direction.index}>
             <button type="button" className="story-photo" onClick={() => openPhoto(direction.index, direction.indexes, direction.title)} aria-label={`浏览系列：${direction.title}`}>
               <img src={photographs[direction.index].src} alt={photographs[direction.index].alt} loading="lazy" />
               <span className="photo-open" aria-hidden="true">查看系列 · {direction.indexes.length} 张 ↗</span>
             </button>
             <div className="series-contact-sheet" aria-label={`${direction.title}的照片预览`}>{direction.indexes.map((index, position) => <button type="button" key={index} aria-label={`预览${direction.title}第${position + 1}张`} onClick={() => openPhoto(index, direction.indexes, direction.title)}><img src={photographs[index].src} alt={photographs[index].alt} loading="lazy" /><span>{String(position + 1).padStart(2, "0")}</span></button>)}</div>
-            <div className="story-info"><div className="story-title"><span className="story-number">0{order + 1}</span><h3>{direction.title}</h3><span className="story-english">{direction.english}</span></div><div className="story-description"><p className="story-category">{direction.category}</p><p>{direction.description}</p>{direction.bookable ? <a className="underlined-link" href="#contact" onClick={() => chooseStyle(direction.style, direction.title)}>我想拍这一系列 <span aria-hidden="true">↗</span></a> : <a className="underlined-link" href="#archive-street" onClick={() => { const gallery = document.getElementById("archive-street") as HTMLDetailsElement | null; if (gallery) gallery.open = true; }}>看更多街头观察 <span aria-hidden="true">↗</span></a>}</div></div>
+            <div className="story-info"><div className="story-title"><span className="story-number">0{order + 1}</span><h3>{direction.title}</h3><span className="story-english">{direction.english}</span></div><div className="story-description"><p className="story-category">{direction.category}</p><p>{direction.description}</p><div className="story-actions"><button className="save-series" type="button" aria-pressed={savedSeries.includes(direction.title)} onClick={() => toggleSeries(direction.title)}><span aria-hidden="true">{savedSeries.includes(direction.title) ? "♥" : "♡"}</span>{savedSeries.includes(direction.title) ? "已加入灵感夹" : "加入我的灵感夹"}</button>{direction.bookable ? <a className="underlined-link" href="#contact" onClick={() => chooseStyle(direction.style, direction.title)}>我想拍这一系列 <span aria-hidden="true">↗</span></a> : <a className="underlined-link" href="#archive-street" onClick={() => { const gallery = document.getElementById("archive-street") as HTMLDetailsElement | null; if (gallery) gallery.open = true; }}>看更多街头观察 <span aria-hidden="true">↗</span></a>}</div></div></div>
           </article>)}
         </div>
+        <div className="works-outro"><span>YOUR STORY IS NEXT</span><p>收藏几组喜欢的画面，<br />带着感觉来聊。</p><a href="#contact">聊聊我的拍摄 <span aria-hidden="true">↗</span></a></div>
       </section>
 
       <section className="case-study section" id="case">
@@ -232,7 +240,7 @@ export default function Home() {
           <h3>从你的想法开始。</h3>
           <p className="inquiry-intro">知道多少就填多少，没想好的可以留空。</p>
           <fieldset className="inquiry-direction"><legend>01 / 想拍什么</legend><div className="style-options">{inquiryStyles.map((style) => <button key={style} type="button" aria-pressed={chosenStyle === style} onClick={() => chooseStyle(style)}>{style}<span aria-hidden="true">{chosenStyle === style ? " ✓" : " ＋"}</span></button>)}</div></fieldset>
-          {reference && <div className="reference-chip" role="status"><span>参考：{reference}</span><button type="button" onClick={() => { setReference(""); setCopyStatus(""); }} aria-label="移除参考作品">×</button></div>}
+          {inquiryReferences && <div className="reference-chip" role="status"><span>参考：{inquiryReferences}</span><button type="button" onClick={() => { setReference(""); setSavedSeries([]); setCopyStatus(""); }} aria-label="清空参考作品">×</button></div>}
           <fieldset className="inquiry-fields"><legend>02 / 大致安排</legend><label>意向日期<input type="text" value={inquiry.date} onChange={(event) => updateInquiry("date", event.target.value)} placeholder="如：十月周末 / 还没确定" maxLength={80} /></label><div className="field-pair"><label>拍摄城市<input type="text" value={inquiry.city} onChange={(event) => updateInquiry("city", event.target.value)} placeholder="你想在哪里拍" maxLength={80} /></label><label>拍摄人数<input type="text" inputMode="numeric" value={inquiry.people} onChange={(event) => updateInquiry("people", event.target.value)} placeholder="如：1 人 / 2 人" maxLength={30} /></label></div><label>预算范围<input type="text" value={inquiry.budget} onChange={(event) => updateInquiry("budget", event.target.value)} placeholder="也可以先了解报价" maxLength={80} /></label><label>喜欢的感觉，或担心的事<textarea value={inquiry.notes} onChange={(event) => updateInquiry("notes", event.target.value)} rows={3} placeholder="风格、妆造服装需求、不会摆姿势……都可以说。" maxLength={1000} /></label></fieldset>
           <details className="message-preview"><summary>预览整理好的咨询文字 <span className="plus" aria-hidden="true">＋</span></summary><textarea aria-label="整理好的咨询文字" value={inquiryMessage} readOnly rows={7} /></details>
           <button className="button inquiry-copy" type="button" onClick={copyInquiry}>复制咨询文字 <span aria-hidden="true">↗</span></button>
@@ -242,6 +250,7 @@ export default function Home() {
       </section>
 
       <footer><div className="footer-top"><a className="brand" href="#top"><strong>钟家伦<span className="brand-dot">.</span></strong><span>人物摄影</span></a><span>© 2026 钟家伦摄影</span><a href="#top">回到顶部 ↑</a></div><p className="footer-wordmark" aria-hidden="true">JIALUN<span>↗</span></p></footer>
+      {savedSeries.length > 0 && <div className="inspiration-tray" role="status"><span>已收藏 {savedSeries.length} 组喜欢的画面</span><a href="#contact">带着灵感去聊 <span aria-hidden="true">↗</span></a></div>}
       <div className="mobile-contact"><a href="#case">看整组案例</a><a href="#contact">聊聊我的拍摄 ↗</a></div>
 
       <dialog ref={dialogRef} className="lightbox" aria-label={`${galleryTitle}大图预览`} onCancel={closePhoto} onClose={() => setActiveIndex(null)} onClick={(event) => { if (event.target === event.currentTarget) closePhoto(); }} onKeyDown={(event) => { if (event.key === "ArrowRight") { event.preventDefault(); movePhoto(1); } if (event.key === "ArrowLeft") { event.preventDefault(); movePhoto(-1); } }}>

@@ -149,6 +149,24 @@ test('four series have complete unique sequences and carry their title into inqu
   }
 });
 
+test('saved series can be toggled and appear once in the consultation draft', () => {
+  const page = createPage();
+  let tree = page.render();
+  const buttons = elements(tree).filter(n => n.props?.className === 'save-series');
+  assert.equal(buttons.length, 4);
+  buttons[0].props.onClick();
+  tree = page.render();
+  assert.match(text(find(tree, n => n.props?.className === 'inspiration-tray')), /已收藏 1 组/);
+  assert.match(find(tree, n => n.props?.['aria-label'] === '整理好的咨询文字').props.value, /参考作品：庭院寻春/);
+  elements(tree).filter(n => n.props?.className === 'save-series')[1].props.onClick();
+  tree = page.render();
+  assert.match(find(tree, n => n.props?.['aria-label'] === '整理好的咨询文字').props.value, /庭院寻春、朱衣入画/);
+  elements(tree).filter(n => n.props?.className === 'save-series')[0].props.onClick();
+  tree = page.render();
+  assert.match(find(tree, n => n.props?.['aria-label'] === '整理好的咨询文字').props.value, /参考作品：朱衣入画/);
+  assert.doesNotMatch(find(tree, n => n.props?.['aria-label'] === '整理好的咨询文字').props.value, /庭院寻春/);
+});
+
 test('case lightbox cycles within its four photographs and resets on another gallery', () => {
   const page = createPage();
   let tree = page.render();
