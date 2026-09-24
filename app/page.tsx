@@ -156,12 +156,12 @@ export default function Home() {
     <main>
       <a className="skip-link" href="#works">跳到摄影作品</a>
       <header className="site-header">
-        <a className="brand" href="#top" aria-label="钟家伦摄影，回到顶部"><strong>钟家伦<span className="brand-dot">.</span></strong><span>JIALUN / PHOTOGRAPHY</span></a>
+        <a className="brand" href="#top" aria-label="JL 摄影，回到顶部"><strong>JL<span className="brand-dot">.</span></strong><span>PORTRAIT / JOURNAL</span></a>
         <nav aria-label="主导航"><a href="#works">翻看作品</a><a href="#experience">拍摄之前</a><a href="#process">拍摄流程</a><a className="nav-contact" href="#contact">聊聊拍摄 <span aria-hidden="true">↗</span></a></nav>
       </header>
 
       <section className="portrait-cover" id="top" aria-labelledby="cover-title">
-        <div className="cover-copy"><p className="eyebrow">钟家伦的摄影手记 / PORTRAIT JOURNAL</p><h1 id="cover-title">你不用擅长<br />面对<em>镜头。</em></h1><p className="cover-note">把准备交给我，<br />把这一刻，留给自己。</p><p className="cover-intro">从喜欢的画面聊起，一起找地点、想动作。<br />你可以慢慢进入状态，我会一步步引导。</p><a className="island-button" href="#works">翻开我的作品集 <span aria-hidden="true">↗</span></a><a className="cover-text-link" href="#experience">第一次拍写真？从这里了解</a><div className="cover-signature"><span>Jialun</span><p>人物写真 · 汉服 · 日常记录</p></div></div>
+        <div className="cover-copy"><p className="eyebrow">JL 的摄影手记 / PORTRAIT JOURNAL</p><h1 id="cover-title">你不用擅长<br />面对<em>镜头。</em></h1><p className="cover-note">把准备交给我，<br />把这一刻，留给自己。</p><p className="cover-intro">从喜欢的画面聊起，一起找地点、想动作。<br />你可以慢慢进入状态，我会一步步引导。</p><a className="island-button" href="#works">翻开我的作品集 <span aria-hidden="true">↗</span></a><a className="cover-text-link" href="#experience">第一次拍写真？从这里了解</a><div className="cover-signature"><span>JL.</span><p>人物写真 · 汉服 · 日常记录</p></div></div>
         <div className="cover-art"><span className="vertical-note" aria-hidden="true">不必成为别人，留下你自己。</span><button className="hero-frame" type="button" onClick={() => openPhoto(38, directions[2].indexes, "庭院寻春")} aria-label="浏览首页作品：庭院寻春"><img src={photographs[38].src} alt={photographs[38].alt} fetchPriority="high" /><span className="hero-photo-tag">庭院寻春 <span>打开这一组 ↗</span></span></button><div className="hero-caption"><span>01 / 春日影像</span><span>从喜欢的画面开始，慢慢成为自己的主角。</span></div></div>
         <div className="journal-footer"><span>摄影不只发生在按下快门的那一秒。</span><a href="#works">向下翻阅 ↓</a></div>
       </section>
@@ -203,7 +203,7 @@ export default function Home() {
 
       <section className="experience" id="experience">
         <div className="experience-photo"><img src="./work/umbrella-forest-retouched.webp" alt="林间撑纸伞的蓝衣少女" loading="lazy" /><span>林间清风 / 人物摄影作品</span></div>
-        <div className="experience-copy"><p className="section-label">03 / BEFORE THE CAMERA</p><h2>在你来到<br />镜头前，<br /><em>准备先开始。</em></h2><p className="experience-lead">我是钟家伦。先了解你的喜好，再研究地点、构图和动作，想好怎么引导你。你不需要独自琢磨“到了现场该怎么拍”。</p>
+        <div className="experience-copy"><p className="section-label">03 / BEFORE THE CAMERA</p><h2>在你来到<br />镜头前，<br /><em>准备先开始。</em></h2><p className="experience-lead">我是 JL。先了解你的喜好，再研究地点、构图和动作，想好怎么引导你。你不需要独自琢磨“到了现场该怎么拍”。</p>
           <div className="care-list">{preparations.map((item, index) => <div key={item.title}><span>0{index + 1}</span><div><h3>{item.title}</h3><p>{item.text}</p></div></div>)}</div>
           <a className="underlined-link" href="#contact">一起找适合我的拍摄方向 <span aria-hidden="true">↗</span></a>
         </div>
@@ -250,7 +250,7 @@ export default function Home() {
         </aside>
       </section>
 
-      <footer><div className="footer-top"><a className="brand" href="#top"><strong>钟家伦<span className="brand-dot">.</span></strong><span>人物摄影</span></a><span>© 2026 钟家伦摄影</span><a href="#top">回到顶部 ↑</a></div><p className="footer-wordmark" aria-hidden="true">JIALUN<span>↗</span></p></footer>
+      <footer><div className="footer-top"><a className="brand" href="#top" aria-label="JL 摄影，回到顶部"><strong>JL<span className="brand-dot">.</span></strong><span>人物摄影</span></a><span>© 2026 JL 摄影</span><a href="#top">回到顶部 ↑</a></div><p className="footer-wordmark" aria-hidden="true">JL<span>↗</span></p></footer>
       {savedSeries.length > 0 && <div className="inspiration-tray" role="status"><span>已收藏 {savedSeries.length} 组喜欢的画面</span><a href="#contact">带着灵感去聊 <span aria-hidden="true">↗</span></a></div>}
       <div className="mobile-contact"><a href="#case">看整组案例</a><a href="#contact">聊聊我的拍摄 ↗</a></div>
 

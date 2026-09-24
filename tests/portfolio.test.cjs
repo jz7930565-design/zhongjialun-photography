@@ -57,6 +57,25 @@ function find(tree, predicate) {
   return result;
 }
 
+test('JL brand is consistent in the page and browser metadata', () => {
+  const tree = createPage().render();
+  const brands = elements(tree).filter(n => n.props?.className === 'brand');
+  assert.equal(brands.length, 2);
+  for (const brand of brands) {
+    assert.match(text(brand), /^JL\./);
+    assert.equal(brand.props['aria-label'], 'JL 摄影，回到顶部');
+  }
+  assert.match(text(find(tree, n => n.props?.className === 'footer-wordmark')), /^JL/);
+  assert.doesNotMatch(source, /钟家伦|JIALUN|Jialun/);
+  for (const filename of ['index.html', 'app/layout.tsx']) {
+    const metadata = fs.readFileSync(path.join(project, filename), 'utf8');
+    assert.match(metadata, /JL 摄影/);
+    assert.match(metadata, /og-jl\.png/);
+    assert.doesNotMatch(metadata, /钟家伦/);
+  }
+  assert.ok(fs.existsSync(path.join(project, 'public/og-jl.png')));
+});
+
 test('QQ click uses the confirmed number on desktop, phones and iPad without sending messages', () => {
   for (const options of [{}, { userAgent: 'Android' }, { userAgent: 'iPhone' }, { platform: 'MacIntel', maxTouchPoints: 5 }]) {
     const page = createPage(options);
