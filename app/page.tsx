@@ -5,8 +5,8 @@ import { useEffect, useRef, useState } from "react";
 const photographs = [
   { src: "./work/portrait-01.webp", alt: "夕阳下行走的汉服少女" },
   { src: "./work/portrait-02.webp", alt: "古建筑前的双人汉服肖像" },
-  { src: "./work/dream-door.webp", alt: "宫门前的蓝色汉服少女" },
-  { src: "./work/dream-courtyard.webp", alt: "建筑中轴线上的持伞少女" },
+  { src: "./work/dream-door-retouched.webp", alt: "古门前持扇的蓝衣少女" },
+  { src: "./work/umbrella-forest-retouched.webp", alt: "林间撑纸伞的蓝衣少女" },
   { src: "./work/portrait-05.webp", alt: "红灯笼前的粉色汉服少女" },
   { src: "./work/portrait-06.webp", alt: "山石旁读书的红衣少年" },
   { src: "./work/pink-sleeves-retouched.webp", alt: "古建筑栏杆旁抬袖的粉衣少女" },
@@ -49,15 +49,16 @@ const directions = [
   { index: 32, indexes: [32, 33, 34, 35], title: "童游记", english: "LITTLE WANDERER", category: "儿童汉服 · 游园", description: "把童真，留在游园的片刻。", style: "儿童汉服", bookable: true },
   { index: 26, indexes: [26, 25, 19, 27, 28], title: "朱衣入画", english: "VERMILION STORY", category: "汉服写真 · 红衣光影", description: "衣袖舒展，光影停留。", style: "汉服写真", bookable: true },
   { index: 36, indexes: [36, 38, 6, 29, 39, 30, 31], title: "庭院寻春", english: "GARDEN REVERIE", category: "汉服写真 · 园林", description: "走过回廊，在绿意间停一停。", style: "汉服写真", bookable: true },
-  { index: 8, indexes: [8, 3, 2, 7, 37], title: "一卷清梦", english: "A QUIET CHAPTER", category: "汉服写真 · 书卷", description: "书页、纸伞与一段安静的时光。", style: "汉服写真", bookable: true },
+  { index: 3, indexes: [3, 2, 7, 37], title: "一卷清梦", english: "A QUIET CHAPTER", category: "汉服写真 · 书卷", description: "书页、纸伞与一段安静的时光。", style: "汉服写真", bookable: true },
 
 ];
 const caseIndexes = [0, 1, 12, 14];
-const allIndexes = photographs.map((_, index) => index);
+const withdrawnIndexes = new Set([8]);
+const allIndexes = photographs.map((_, index) => index).filter((index) => !withdrawnIndexes.has(index));
 const selected = [...directions.flatMap((direction) => direction.indexes), ...caseIndexes];
 const streetIndexes = [20, 23, 22, 24, 21];
 const collections = [
-  { id: "hanfu", title: "汉服写真", note: "古建、园林与人物光影", indexes: [25, 26, 27, 28, 30, 31, 29, 19, 14, 13, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 32, 33, 34, 35, 36, 37, 38, 39] },
+  { id: "hanfu", title: "汉服写真", note: "古建、园林与人物光影", indexes: [25, 26, 27, 28, 30, 31, 29, 19, 14, 13, 0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 32, 33, 34, 35, 36, 37, 38, 39] },
   { id: "natural", title: "自然写真", note: "蓝天、草木与日常穿搭", indexes: [18, 17, 15, 16] },
   { id: "street", title: "街头观察", note: "个人观察记录，非预约客片", indexes: streetIndexes },
 ];
@@ -190,7 +191,7 @@ export default function Home() {
       </section>
 
       <section className="collections section" id="collections">
-        <div className="collection-heading"><h3>按作品类型，继续看。</h3><p>共 {photographs.length} 张作品 · 精选与案例之外，按类别继续浏览</p></div>
+        <div className="collection-heading"><h3>按作品类型，继续看。</h3><p>共 {allIndexes.length} 张作品 · 精选与案例之外，按类别继续浏览</p></div>
         {collections.map((collection) => {
           const remaining = collection.indexes.filter((index) => !selected.includes(index));
           return <details className="archive collection-archive" id={`archive-${collection.id}`} key={collection.id}>

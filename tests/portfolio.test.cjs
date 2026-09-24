@@ -7,7 +7,7 @@ const ts = require('typescript');
 
 const project = path.resolve(__dirname, '..');
 const source = fs.readFileSync(path.join(project, 'app/page.tsx'), 'utf8');
-const data = new Function(source.slice(source.indexOf('const photographs'), source.indexOf('export default')) + '; return { photographs, caseIndexes, collections, selected, directions };')();
+const data = new Function(source.slice(source.indexOf('const photographs'), source.indexOf('export default')) + '; return { photographs, caseIndexes, collections, selected, directions, allIndexes };')();
 
 function createPage(options = {}) {
   const state = [];
@@ -90,8 +90,12 @@ test('requested cover and experience replacements use the selected photographs',
   assert.equal(find(experience, n => n.type === 'img').props.src, './work/umbrella-forest-retouched.webp');
   assert.match(text(experience), /林间清风/);
   assert.equal(data.photographs[37].src, './work/dream-resting-retouched.webp');
+  assert.equal(data.photographs[2].src, './work/dream-door-retouched.webp');
+  assert.equal(data.photographs[3].src, './work/umbrella-forest-retouched.webp');
   assert.ok(fs.existsSync(path.join(project, 'public/work/umbrella-forest-retouched.webp')));
   assert.ok(!source.includes('./work/dream-umbrella.webp'));
+  assert.ok(!source.includes('./work/dream-door.webp'));
+  assert.ok(!source.includes('./work/dream-courtyard.webp'));
 });
 
 test('contact sheets open the exact frame without leaving its series', () => {
@@ -118,20 +122,23 @@ test('all six service steps remain available in native disclosures', () => {
   }
 });
 
-test('all 40 works remain accessible; the confirmed case is exactly 01, 02, 13, 15', () => {
+test('the withdrawn frame is inaccessible while 39 works and the confirmed case remain available', () => {
   assert.deepEqual(data.caseIndexes, [0, 1, 12, 14]);
   assert.equal(data.photographs.length, 40);
+  assert.equal(data.allIndexes.length, 39);
+  assert.ok(!data.allIndexes.includes(8));
   const grouped = data.collections.flatMap((group) => group.indexes);
-  assert.equal(grouped.length, 40);
-  assert.equal(new Set(grouped).size, 40);
+  assert.equal(grouped.length, 39);
+  assert.equal(new Set(grouped).size, 39);
+  assert.ok(!grouped.includes(8));
   const additional = grouped.filter((index) => !data.selected.includes(index));
   assert.equal(additional.length, 15);
   for (const photo of data.photographs) assert.ok(fs.existsSync(path.join(project, 'public', photo.src)));
 });
 
 test('four series have complete unique sequences and carry their title into inquiries', () => {
-  assert.deepEqual(data.directions.map(s => s.indexes.length), [4, 5, 7, 5]);
-  assert.equal(new Set(data.directions.flatMap(s => s.indexes)).size, 21);
+  assert.deepEqual(data.directions.map(s => s.indexes.length), [4, 5, 7, 4]);
+  assert.equal(new Set(data.directions.flatMap(s => s.indexes)).size, 20);
   for (const series of data.directions) {
     const page = createPage();
     let tree = page.render();
