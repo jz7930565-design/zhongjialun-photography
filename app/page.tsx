@@ -40,7 +40,7 @@ const photographs = [
   { src: "./work/child-3.webp", alt: "草木间回头微笑的小朋友" },
   { src: "./work/child-4.webp", alt: "石狮旁抬手玩耍的小朋友" },
   { src: "./work/garden-umbrella-retouched.webp", alt: "青瓦回廊前举起纸伞的粉衣少女" },
-  { src: "./work/dream-umbrella.webp", alt: "山石草木间撑纸伞的蓝衣少女" },
+  { src: "./work/dream-resting-retouched.webp", alt: "书案前伏案小憩的蓝衣少女" },
   { src: "./work/pink-veil-portrait.webp", alt: "青瓦屋檐前以粉色衣袖半遮面的汉服少女" },
   { src: "./work/pink-sky-profile.webp", alt: "蓝天与古建前侧身远望的粉衣少女" },
 ];
@@ -201,7 +201,7 @@ export default function Home() {
       </section>
 
       <section className="experience" id="experience">
-        <div className="experience-photo"><img src={photographs[37].src} alt={photographs[37].alt} loading="lazy" /><span>伞下清风 / 人物摄影作品</span></div>
+        <div className="experience-photo"><img src="./work/umbrella-forest-retouched.webp" alt="林间撑纸伞的蓝衣少女" loading="lazy" /><span>林间清风 / 人物摄影作品</span></div>
         <div className="experience-copy"><p className="section-label">03 / BEFORE THE CAMERA</p><h2>在你来到<br />镜头前，<br /><em>准备先开始。</em></h2><p className="experience-lead">我是钟家伦。先了解你的喜好，再研究地点、构图和动作，想好怎么引导你。你不需要独自琢磨“到了现场该怎么拍”。</p>
           <div className="care-list">{preparations.map((item, index) => <div key={item.title}><span>0{index + 1}</span><div><h3>{item.title}</h3><p>{item.text}</p></div></div>)}</div>
           <a className="underlined-link" href="#contact">一起找适合我的拍摄方向 <span aria-hidden="true">↗</span></a>

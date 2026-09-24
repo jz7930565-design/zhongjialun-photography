@@ -81,14 +81,17 @@ test('QQ number copying reports success and failure honestly', async () => {
   }
 });
 
-test('requested cover and experience replacements use the selected existing photographs', () => {
+test('requested cover and experience replacements use the selected photographs', () => {
   const page = createPage();
   const tree = page.render();
   const cover = find(tree, n => n.props?.['aria-label'] === '浏览系列：朱衣入画');
   assert.equal(find(cover, n => n.type === 'img').props.src, './work/collection-27.webp');
   const experience = find(tree, n => n.props?.className === 'experience-photo');
-  assert.equal(find(experience, n => n.type === 'img').props.src, './work/dream-umbrella.webp');
-  assert.match(text(experience), /伞下清风/);
+  assert.equal(find(experience, n => n.type === 'img').props.src, './work/umbrella-forest-retouched.webp');
+  assert.match(text(experience), /林间清风/);
+  assert.equal(data.photographs[37].src, './work/dream-resting-retouched.webp');
+  assert.ok(fs.existsSync(path.join(project, 'public/work/umbrella-forest-retouched.webp')));
+  assert.ok(!source.includes('./work/dream-umbrella.webp'));
 });
 
 test('contact sheets open the exact frame without leaving its series', () => {
