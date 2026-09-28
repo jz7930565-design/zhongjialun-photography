@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 
 const photographs = [
   { src: "./work/portrait-01.webp", alt: "夕阳下行走的汉服少女" },
@@ -46,12 +47,13 @@ const photographs = [
 ];
 
 const directions = [
-  { index: 32, indexes: [32, 33, 34, 35], title: "童游记", english: "LITTLE WANDERER", category: "儿童汉服 · 游园", description: "把童真，留在游园的片刻。", style: "儿童汉服", bookable: true },
-  { index: 26, indexes: [26, 25, 19, 27, 28], title: "朱衣入画", english: "VERMILION STORY", category: "汉服写真 · 红衣光影", description: "衣袖舒展，光影停留。", style: "汉服写真", bookable: true },
-  { index: 36, indexes: [36, 38, 6, 29, 39, 30, 31], title: "庭院寻春", english: "GARDEN REVERIE", category: "汉服写真 · 园林", description: "走过回廊，在绿意间停一停。", style: "汉服写真", bookable: true },
-  { index: 3, indexes: [3, 2, 7, 37], title: "一卷清梦", english: "A QUIET CHAPTER", category: "汉服写真 · 书卷", description: "书页、纸伞与一段安静的时光。", style: "汉服写真", bookable: true },
+  { index: 32, indexes: [32, 33, 34, 35], title: "童游记", english: "LITTLE WANDERER", category: "儿童汉服 · 游园", description: "把童真，留在游园的片刻。", storyNote: "不用把每一秒都摆得整齐。走动、回头和玩耍，本来就是故事的一部分。", style: "儿童汉服", bookable: true },
+  { index: 26, indexes: [26, 25, 19, 27, 28], title: "朱衣入画", english: "VERMILION STORY", category: "汉服写真 · 红衣光影", description: "衣袖舒展，光影停留。", storyNote: "近一点看神情，远一点看衣袖与建筑。红色在不同距离里，有不一样的情绪。", style: "汉服写真", bookable: true },
+  { index: 36, indexes: [36, 38, 6, 29, 39, 30, 31], title: "庭院寻春", english: "GARDEN REVERIE", category: "汉服写真 · 园林", description: "走过回廊，在绿意间停一停。", storyNote: "檐角、衣袖与绿意之间，留一点空白，也留一点自在移动的空间。", style: "汉服写真", bookable: true },
+  { index: 3, indexes: [3, 2, 7, 37], title: "一卷清梦", english: "A QUIET CHAPTER", category: "汉服写真 · 书卷", description: "书页、纸伞与一段安静的时光。", storyNote: "纸伞、书页和停下来的姿态。不是每一张都要看着镜头，故事也能慢慢发生。", style: "汉服写真", bookable: true },
 
 ];
+const featuredDirections = [directions[2], directions[1], directions[3], directions[0]];
 const caseIndexes = [0, 1, 12, 14];
 const withdrawnIndexes = new Set([8]);
 const allIndexes = photographs.map((_, index) => index).filter((index) => !withdrawnIndexes.has(index));
@@ -99,9 +101,17 @@ export default function Home() {
   const [inquiry, setInquiry] = useState({ date: "", city: "", people: "", budget: "", notes: "" });
   const [copyStatus, setCopyStatus] = useState("");
   const [qqStatus, setQqStatus] = useState("");
+  const [activeRailIndex, setActiveRailIndex] = useState(0);
+  const [activeStory, setActiveStory] = useState<number | null>(null);
+  const [transitionSource, setTransitionSource] = useState<number | null>(null);
+  const [transitionOrigin, setTransitionOrigin] = useState<"hero" | "card" | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const storyDialogRef = useRef<HTMLDialogElement>(null);
+  const railRef = useRef<HTMLDivElement>(null);
   const returnFocus = useRef<HTMLElement | null>(null);
+  const storyReturnFocus = useRef<HTMLElement | null>(null);
   const inquiryReferences = [...new Set([reference, ...savedSeries].filter(Boolean))].join("、");
+  const project = activeStory === null ? null : featuredDirections[activeStory];
   const inquiryMessage = `你好，我想咨询${chosenStyle && chosenStyle !== "还没想好，想聊聊" ? "「" + chosenStyle + "」" : ""}拍摄。${inquiryReferences ? "\n参考作品：" + inquiryReferences : ""}\n意向日期：${inquiry.date || "待商量"}\n城市 / 人数：${inquiry.city || "待商量"} / ${inquiry.people || "待确认"}\n预算范围：${inquiry.budget || "想先了解报价"}\n拍摄想法与顾虑：${inquiry.notes || "想一起聊聊适合我的方向"}\n希望了解方案、费用和可约时间。`;
   const updateInquiry = (field: keyof typeof inquiry, value: string) => {
     setInquiry((current) => ({ ...current, [field]: value }));
@@ -128,6 +138,45 @@ export default function Home() {
     setSavedSeries((current) => current.includes(title) ? current.filter((item) => item !== title) : [...current, title]);
     setCopyStatus("");
   };
+  const openStory = (order: number, origin: "hero" | "card" = "card") => {
+    storyReturnFocus.current = document.activeElement as HTMLElement;
+    const reveal = () => {
+      flushSync(() => setActiveStory(order));
+      storyDialogRef.current?.showModal();
+    };
+    if (document.startViewTransition && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      flushSync(() => { setTransitionSource(order); setTransitionOrigin(origin); });
+      document.startViewTransition(reveal).finished.then(() => { setTransitionSource(null); setTransitionOrigin(null); }, () => { setTransitionSource(null); setTransitionOrigin(null); });
+    } else reveal();
+  };
+  const closeStory = (restoreFocus = true) => {
+    storyDialogRef.current?.close();
+    setActiveStory(null);
+    setTransitionSource(null);
+    setTransitionOrigin(null);
+    if (restoreFocus) storyReturnFocus.current?.focus({ preventScroll: true });
+  };
+  const nextStory = () => {
+    if (activeStory === null) return;
+    setActiveStory((activeStory + 1) % featuredDirections.length);
+    storyDialogRef.current?.scrollTo({ top: 0, behavior: "auto" });
+    storyDialogRef.current?.querySelector<HTMLElement>(".project-close")?.focus({ preventScroll: true });
+  };
+  const scrollToStory = (index: number) => {
+    const card = railRef.current?.querySelectorAll<HTMLElement>(".story")[index];
+    card?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "nearest", inline: "start" });
+    setActiveRailIndex(index);
+  };
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail || !("IntersectionObserver" in window)) return;
+    const observer = new IntersectionObserver((entries) => {
+      const current = entries.filter((entry) => entry.isIntersecting && entry.intersectionRatio >= .6).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (current) setActiveRailIndex(Number((current.target as HTMLElement).dataset.storyOrder));
+    }, { root: rail, threshold: [.6, .75] });
+    rail.querySelectorAll(".story").forEach((card) => observer.observe(card));
+    return () => observer.disconnect();
+  }, []);
   useEffect(() => {
     if (activeIndex === null) return;
     if (!dialogRef.current?.open) dialogRef.current?.showModal();
@@ -135,6 +184,12 @@ export default function Home() {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = previousOverflow; };
   }, [activeIndex]);
+  useEffect(() => {
+    if (activeStory === null) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = previousOverflow; };
+  }, [activeStory]);
   const copyInquiry = async () => {
     try {
       await navigator.clipboard.writeText(inquiryMessage);
@@ -162,24 +217,26 @@ export default function Home() {
 
       <section className="portrait-cover" id="top" aria-labelledby="cover-title">
         <div className="cover-copy"><p className="eyebrow">JL 的摄影手记 / PORTRAIT JOURNAL</p><h1 id="cover-title">你不用擅长<br />面对<em>镜头。</em></h1><p className="cover-note">把准备交给我，<br />把这一刻，留给自己。</p><p className="cover-intro">从喜欢的画面聊起，一起找地点、想动作。<br />你可以慢慢进入状态，我会一步步引导。</p><a className="island-button" href="#works">翻开我的作品集 <span aria-hidden="true">↗</span></a><a className="cover-text-link" href="#experience">第一次拍写真？从这里了解</a><div className="cover-signature"><span>JL.</span><p>人物写真 · 汉服 · 日常记录</p></div></div>
-        <div className="cover-art"><span className="vertical-note" aria-hidden="true">不必成为别人，留下你自己。</span><button className="hero-frame" type="button" onClick={() => openPhoto(38, directions[2].indexes, "庭院寻春")} aria-label="浏览首页作品：庭院寻春"><img src={photographs[38].src} alt={photographs[38].alt} fetchPriority="high" /><span className="hero-photo-tag">庭院寻春 <span>打开这一组 ↗</span></span></button><div className="hero-caption"><span>01 / 春日影像</span><span>从喜欢的画面开始，慢慢成为自己的主角。</span></div></div>
+        <div className="cover-art"><span className="vertical-note" aria-hidden="true">不必成为别人，留下你自己。</span><button className="hero-frame" type="button" onClick={() => openStory(0, "hero")} aria-label="浏览首页作品：庭院寻春"><img src={photographs[38].src} alt={photographs[38].alt} fetchPriority="high" style={{ viewTransitionName: transitionSource === 0 && transitionOrigin === "hero" && activeStory === null ? "story-image" : undefined }} /><span className="hero-photo-tag">庭院寻春 <span>打开这一组 ↗</span></span></button><div className="hero-caption"><span>01 / 春日影像</span><span>从喜欢的画面开始，慢慢成为自己的主角。</span></div></div>
         <div className="journal-footer"><span>摄影不只发生在按下快门的那一秒。</span><a href="#works">向下翻阅 ↓</a></div>
       </section>
 
       <section className="works section" id="works">
         <div className="section-label"><span>01 / SELECTED STORIES</span><span>摄影作品选集</span></div>
         <div className="works-heading"><h2>喜欢的画面，<br /><span>是我们聊天的起点。</span></h2><p>不用马上决定风格。<br />先翻一翻，找到让你停下来的那一张。</p></div>
-        <nav className="chapter-nav" aria-label="跳转到作品系列">{[directions[2], directions[1], directions[3], directions[0]].map((direction, index) => <a href={`#story-${index + 1}`} key={direction.title}><span>0{index + 1}</span>{direction.title}<span aria-hidden="true">↗</span></a>)}</nav>
-        <div className="editorial-grid">
-          {[directions[2], directions[1], directions[3], directions[0]].map((direction, order) => <article className={`story story-${order + 1}`} id={`story-${order + 1}`} key={direction.index}>
-            <button type="button" className="story-photo" onClick={() => openPhoto(direction.index, direction.indexes, direction.title)} aria-label={`浏览系列：${direction.title}`}>
-              <img src={photographs[direction.index].src} alt={photographs[direction.index].alt} loading="lazy" />
-              <span className="photo-open" aria-hidden="true">查看系列 · {direction.indexes.length} 张 ↗</span>
+        <nav className="chapter-nav" aria-label="跳转到作品系列">{featuredDirections.map((direction, index) => <a href={`#story-${index + 1}`} aria-current={activeRailIndex === index ? "true" : undefined} onClick={() => setActiveRailIndex(index)} key={direction.title}><span>0{index + 1}</span>{direction.title}<span aria-hidden="true">↗</span></a>)}</nav>
+        <div className="filmstrip-topline"><p>向右翻阅，找到让你停下来的画面。</p><div className="filmstrip-controls"><button type="button" onClick={() => scrollToStory(Math.max(0, activeRailIndex - 1))} disabled={activeRailIndex === 0} aria-label="上一个摄影系列">←</button><span aria-live="polite">0{activeRailIndex + 1} <i>/</i> 04</span><button type="button" onClick={() => scrollToStory(Math.min(featuredDirections.length - 1, activeRailIndex + 1))} disabled={activeRailIndex === featuredDirections.length - 1} aria-label="下一个摄影系列">→</button></div></div>
+        <div className="editorial-grid filmstrip-rail" ref={railRef} role="region" aria-label="摄影系列，横向浏览" tabIndex={0}>
+          {featuredDirections.map((direction, order) => <article className={`story story-${order + 1}`} id={`story-${order + 1}`} data-story-order={order} key={direction.index}>
+            <button type="button" className="story-photo" onClick={() => openStory(order)} aria-label={`浏览系列：${direction.title}`}>
+              <img src={photographs[direction.index].src} alt={photographs[direction.index].alt} loading="lazy" style={{ viewTransitionName: transitionSource === order && transitionOrigin === "card" && activeStory === null ? "story-image" : undefined }} />
+              <span className="photo-open" aria-hidden="true">进入故事 · {direction.indexes.length} 张 ↗</span>
             </button>
             <div className="series-contact-sheet" aria-label={`${direction.title}的照片预览`}>{direction.indexes.map((index, position) => <button type="button" key={index} aria-label={`预览${direction.title}第${position + 1}张`} onClick={() => openPhoto(index, direction.indexes, direction.title)}><img src={photographs[index].src} alt={photographs[index].alt} loading="lazy" /><span>{String(position + 1).padStart(2, "0")}</span></button>)}</div>
-            <div className="story-info"><div className="story-title"><span className="story-number">0{order + 1}</span><h3>{direction.title}</h3><span className="story-english">{direction.english}</span></div><div className="story-description"><p className="story-category">{direction.category}</p><p>{direction.description}</p><div className="story-actions"><button className="save-series" type="button" aria-pressed={savedSeries.includes(direction.title)} onClick={() => toggleSeries(direction.title)}><span aria-hidden="true">{savedSeries.includes(direction.title) ? "♥" : "♡"}</span>{savedSeries.includes(direction.title) ? "已加入灵感夹" : "加入我的灵感夹"}</button>{direction.bookable ? <a className="underlined-link" href="#contact" onClick={() => chooseStyle(direction.style, direction.title)}>我想拍这一系列 <span aria-hidden="true">↗</span></a> : <a className="underlined-link" href="#archive-street" onClick={() => { const gallery = document.getElementById("archive-street") as HTMLDetailsElement | null; if (gallery) gallery.open = true; }}>看更多街头观察 <span aria-hidden="true">↗</span></a>}</div></div></div>
+            <div className="story-info"><div className="story-title"><span className="story-number">0{order + 1}</span><h3>{direction.title}</h3><span className="story-english">{direction.english}</span></div><div className="story-description"><p className="story-category">{direction.category}</p><p>{direction.description}</p><div className="story-actions"><button className="story-enter" type="button" onClick={() => openStory(order)}>完整看这一组 <span aria-hidden="true">↗</span></button><button className="save-series" type="button" aria-pressed={savedSeries.includes(direction.title)} onClick={() => toggleSeries(direction.title)}><span aria-hidden="true">{savedSeries.includes(direction.title) ? "♥" : "♡"}</span>{savedSeries.includes(direction.title) ? "已加入灵感夹" : "加入我的灵感夹"}</button>{direction.bookable ? <a className="underlined-link" href="#contact" onClick={() => chooseStyle(direction.style, direction.title)}>我想拍这一系列 <span aria-hidden="true">↗</span></a> : <a className="underlined-link" href="#archive-street" onClick={() => { const gallery = document.getElementById("archive-street") as HTMLDetailsElement | null; if (gallery) gallery.open = true; }}>看更多街头观察 <span aria-hidden="true">↗</span></a>}</div></div></div>
           </article>)}
         </div>
+        <div className="filmstrip-meter" aria-hidden="true">{featuredDirections.map((direction, index) => <span key={direction.title} className={activeRailIndex === index ? "is-active" : ""} />)}</div>
         <div className="works-outro"><span>YOUR STORY IS NEXT</span><p>收藏几组喜欢的画面，<br />带着感觉来聊。</p><a href="#contact">聊聊我的拍摄 <span aria-hidden="true">↗</span></a></div>
       </section>
 
@@ -253,6 +310,17 @@ export default function Home() {
       <footer><div className="footer-top"><a className="brand" href="#top" aria-label="JL 摄影，回到顶部"><strong>JL<span className="brand-dot">.</span></strong><span>人物摄影</span></a><span>© 2026 JL 摄影</span><a href="#top">回到顶部 ↑</a></div><p className="footer-wordmark" aria-hidden="true">JL<span>↗</span></p></footer>
       {savedSeries.length > 0 && <div className="inspiration-tray" role="status"><span>已收藏 {savedSeries.length} 组喜欢的画面</span><a href="#contact">带着灵感去聊 <span aria-hidden="true">↗</span></a></div>}
       <div className="mobile-contact"><a href="#case">看整组案例</a><a href="#contact">聊聊我的拍摄 ↗</a></div>
+
+      <dialog ref={storyDialogRef} className="project-dialog" aria-labelledby="project-title" onCancel={(event) => { event.preventDefault(); closeStory(); }} onClose={() => setActiveStory(null)}>
+        {project && <article className="project-story">
+          <div className="project-topbar"><span>JL. <i>/</i> PHOTOGRAPHY STORIES</span><button className="project-close" type="button" onClick={() => closeStory()} autoFocus>返回作品 <span aria-hidden="true">×</span></button></div>
+          <div className="project-hero"><div className="project-hero-copy"><span className="project-kicker">0{activeStory! + 1} / 04 · {project.category}</span><h2 id="project-title">{project.title}</h2><p className="project-english">{project.english}</p><p className="project-description">{project.description}</p><span className="project-scroll-cue">向下，慢慢看完这一组 ↓</span></div><figure><img src={photographs[project.index].src} alt={photographs[project.index].alt} style={{ viewTransitionName: transitionSource === activeStory ? "story-image" : undefined }} /><figcaption>01 / {String(project.indexes.length).padStart(2, "0")} · {photographs[project.index].alt}</figcaption></figure></div>
+          <div className="project-interlude"><span>THE STORY / 画面之间</span><p>{project.storyNote}</p></div>
+          <div className="project-sequence">{project.indexes.slice(1).map((index, position) => <figure className={`project-frame project-frame-${position % 3}`} key={index}><img src={photographs[index].src} alt={photographs[index].alt} loading="lazy" /><figcaption><span>{String(position + 2).padStart(2, "0")} / {String(project.indexes.length).padStart(2, "0")}</span><span>{photographs[index].alt}</span></figcaption></figure>)}</div>
+          <div className="project-ending"><div><span>想把喜欢的感觉，拍成自己的照片？</span><p>从一张参考图聊起。地点、构图和动作，我会和你一起慢慢准备。</p></div><a href="#contact" onClick={() => { chooseStyle(project.style, project.title); closeStory(false); }}>聊聊这组的感觉 <span aria-hidden="true">↗</span></a></div>
+          <button className="project-next" type="button" onClick={nextStory}><span>NEXT STORY / 下一组</span><strong>{featuredDirections[(activeStory! + 1) % featuredDirections.length].title}</strong><span aria-hidden="true">→</span></button>
+        </article>}
+      </dialog>
 
       <dialog ref={dialogRef} className="lightbox" aria-label={`${galleryTitle}大图预览`} onCancel={closePhoto} onClose={() => setActiveIndex(null)} onClick={(event) => { if (event.target === event.currentTarget) closePhoto(); }} onKeyDown={(event) => { if (event.key === "ArrowRight") { event.preventDefault(); movePhoto(1); } if (event.key === "ArrowLeft") { event.preventDefault(); movePhoto(-1); } }}>
         {activeIndex !== null && <><p className="lightbox-title">{galleryTitle}</p><button className="lightbox-close" type="button" onClick={closePhoto} autoFocus>关闭 ×</button><figure><img src={photographs[activeIndex].src} alt={photographs[activeIndex].alt} /><figcaption><span>{String(activeSequence.indexOf(activeIndex) + 1).padStart(2, "0")} / {activeSequence.length} · 作品 {String(activeIndex + 1).padStart(2, "0")}</span><span>{photographs[activeIndex].alt}{streetIndexes.includes(activeIndex) ? " · 街头观察 / 非预约客片" : ""}</span></figcaption></figure><div className="lightbox-controls"><button type="button" onClick={() => movePhoto(-1)} aria-label="上一张">← 上一张</button>{!streetIndexes.includes(activeIndex) && <a href="#contact" onClick={() => { chooseStyle(directions.find((series) => series.title === galleryTitle)?.style || (collections.find((c) => c.id === "natural")!.indexes.includes(activeIndex) ? "自然写真" : "汉服写真"), directions.some((series) => series.title === galleryTitle) ? galleryTitle : galleryTitle === "古建与落日" ? "古建与落日 · 01 / 02 / 13 / 15" : `作品 ${String(activeIndex + 1).padStart(2, "0")}`); closePhoto(); }}>我想拍这种感觉 ↗</a>}<button type="button" onClick={() => movePhoto(1)} aria-label="下一张">下一张 →</button></div></>}

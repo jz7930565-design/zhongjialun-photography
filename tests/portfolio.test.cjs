@@ -31,7 +31,7 @@ function createPage(options = {}) {
   vm.runInNewContext(compiled, {
     exports: module.exports,
     module,
-    require: (name) => name === 'react' ? hooks : require(name),
+    require: (name) => name === 'react' ? hooks : name === 'react-dom' ? { flushSync: (update) => update() } : require(name),
     document: { activeElement: { focus() {} }, body: { style: {} } },
     navigator: { userAgent: options.userAgent || 'Windows', platform: options.platform || 'Win32', maxTouchPoints: options.maxTouchPoints || 0, clipboard: { writeText: async (text) => { if (options.clipboardFails) throw new Error('Clipboard denied'); copied = text; } } },
   });
@@ -122,11 +122,22 @@ test('contact sheets open the exact frame without leaving its series', () => {
     const page = createPage();
     for (let position = 0; position < series.indexes.length; position++) {
       find(page.render(), n => n.props?.['aria-label'] === `预览${series.title}第${position + 1}张`).props.onClick();
-      const dialog = find(page.render(), n => n.type === 'dialog');
+      const dialog = find(page.render(), n => n.props?.className === 'lightbox');
       assert.equal(find(dialog, n => n.type === 'img').props.src, data.photographs[series.indexes[position]].src);
       assert.match(text(dialog), new RegExp(series.title));
     }
   }
+});
+
+test('four stories form one navigable filmstrip with a visible current position', () => {
+  const tree = createPage().render();
+  const rail = find(tree, n => n.props?.className === 'editorial-grid filmstrip-rail');
+  assert.equal(rail.props.role, 'region');
+  assert.equal(rail.props.tabIndex, 0);
+  const cards = elements(rail).filter(n => n.type === 'article');
+  assert.deepEqual(cards.map(n => n.props.id), ['story-1', 'story-2', 'story-3', 'story-4']);
+  assert.equal(elements(tree).filter(n => n.props?.['aria-label'] === '上一个摄影系列').length, 1);
+  assert.equal(elements(tree).filter(n => n.props?.['aria-label'] === '下一个摄影系列').length, 1);
 });
 
 test('all six service steps remain available in native disclosures', () => {
@@ -155,21 +166,18 @@ test('the withdrawn frame is inaccessible while 39 works and the confirmed case 
   for (const photo of data.photographs) assert.ok(fs.existsSync(path.join(project, 'public', photo.src)));
 });
 
-test('four series have complete unique sequences and carry their title into inquiries', () => {
+test('four series open paced photo stories and carry their title into inquiries', () => {
   assert.deepEqual(data.directions.map(s => s.indexes.length), [4, 5, 7, 4]);
   assert.equal(new Set(data.directions.flatMap(s => s.indexes)).size, 20);
   for (const series of data.directions) {
     const page = createPage();
     let tree = page.render();
     find(tree, n => n.props?.['aria-label'] === `浏览系列：${series.title}`).props.onClick();
-    for (let i = 0; i < series.indexes.length + 1; i++) {
-      tree = page.render();
-      const dialog = find(tree, n => n.type === 'dialog');
-      assert.equal(find(dialog, n => n.type === 'img').props.src, data.photographs[series.indexes[i % series.indexes.length]].src);
-      find(dialog, n => n.props?.['aria-label'] === '下一张').props.onClick();
-    }
     tree = page.render();
-    const dialog = find(tree, n => n.type === 'dialog');
+    const dialog = find(tree, n => n.props?.className === 'project-dialog');
+    assert.deepEqual(elements(dialog).filter(n => n.type === 'img').map(n => n.props.src), series.indexes.map(index => data.photographs[index].src));
+    assert.match(text(dialog), new RegExp(series.title));
+    assert.match(text(dialog), new RegExp(series.storyNote));
     find(dialog, n => n.type === 'a' && n.props?.href === '#contact').props.onClick();
     tree = page.render();
     const message = find(tree, n => n.props?.['aria-label'] === '整理好的咨询文字').props.value;
@@ -213,7 +221,7 @@ test('case lightbox cycles within its four photographs and resets on another gal
   find(tree, (node) => node.type === 'button' && node.props?.['aria-label'] === '放大查看：粉紫晚霞下坐在江边的两个人').props.onClick();
   tree = page.render();
   assert.match(text(find(tree, (node) => node.type === 'figcaption')), /01 \/ 5 · 作品 21/);
-  const dialog = find(tree, (node) => node.type === 'dialog');
+  const dialog = find(tree, (node) => node.props?.className === 'lightbox');
   assert.equal(elements(dialog).filter((node) => node.type === 'a' && node.props?.href === '#contact').length, 0);
 });
 
